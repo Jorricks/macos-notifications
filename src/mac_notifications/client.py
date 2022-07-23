@@ -1,6 +1,6 @@
 from datetime import timedelta
 from pathlib import Path
-from typing import Optional, Callable, Union
+from typing import Callable, Optional, Union
 
 from mac_notifications.notification_config import NotificationConfig
 from mac_notifications.notification_manager import NotificationManager
@@ -11,7 +11,7 @@ def get_notification_manager() -> NotificationManager:
 
 
 def create_notification(
-    title: str = 'Notification',
+    title: str = "Notification",
     subtitle: Optional[str] = None,
     text: Optional[str] = None,
     icon: Optional[Union[str, Path]] = None,
@@ -37,5 +37,3 @@ def create_notification(
         do_nothing_button_str=do_nothing_button_str,
     )
     get_notification_manager().create_notification(notification_config)
-
-

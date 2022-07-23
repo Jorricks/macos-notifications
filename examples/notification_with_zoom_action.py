@@ -2,7 +2,7 @@ import subprocess
 import time
 from functools import partial
 from pathlib import Path
-from typing import Union, Optional
+from typing import Optional, Union
 
 from mac_notifications import client
 
@@ -15,7 +15,7 @@ def join_zoom_meeting(conf_number: Union[int, str]) -> None:
 
 def open_zoom() -> None:
     """This opens and sets the focus onto the Zoom application."""
-    subprocess.run(f"open -a zoom.us.app", shell=True)
+    subprocess.run("open -a zoom.us.app", shell=True)
     print("Opened zoom")
 
 
@@ -27,7 +27,7 @@ def create_notification_for_meeting(description: str, zoom_conf_number: Optional
         subtitle=description,
         icon=path_to_icon,
         action_button_str="Join zoom meeting",
-        action_button_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number)
+        action_button_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number),
     )
     print(f"Created notification to join meeting {zoom_conf_number} :)")
 

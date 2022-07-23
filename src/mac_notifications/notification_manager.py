@@ -9,7 +9,6 @@ from mac_notifications.notification_config import NotificationConfig
 from mac_notifications.notification_process import NotificationProcess
 from mac_notifications.singleton import Singleton
 
-
 _NOTIFICATION_MAP: Dict[str, Tuple[Process, NotificationConfig]] = {}
 _QUEUE: Queue = Queue()
 

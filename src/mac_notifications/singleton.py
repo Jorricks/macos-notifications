@@ -1,9 +1,11 @@
 from threading import Lock
+from typing import Any, Dict, Type
 
 
 class Singleton(type):
     """Credits go to https://www.linkedin.com/pulse/writing-thread-safe-singleton-class-python-saurabh-singh/"""
-    _instances = {}
+
+    _instances: Dict[Type, Any] = {}
 
     _lock: Lock = Lock()
 

@@ -1,5 +1,4 @@
-from asyncio import Queue
-from multiprocessing import Process
+from multiprocessing import Process, Queue
 
 from mac_notifications import notification_sender
 from mac_notifications.notification_config import JSONNotificationConfig
@@ -14,4 +13,3 @@ class NotificationProcess(Process):
     def run(self) -> None:
         notification_sender.send_notification(self._queue, self.notification_config).send()
         # on if any of the callbacks are provided, start the event loop (this will keep the program from stopping)
-
