@@ -1,7 +1,7 @@
+# mac-notifications
 <p align="center">
-  <a href="https://github.com/Jorricks/mac-notifications"><img src="https://github.com/Jorricks/mac-notifications/raw/main/docs/mac-notifications.png" alt="mac-notifications" width="600px"></a>
+  <a href="https://jorricks.github.io/mac-notifications"><img src="mac-notifications.png" alt="mac-notifications" width="600px"></a>
 </p>
-<p align="center">
 <p align="center">
 <a href="https://www.apple.com/mac/" target="_blank">
     <img src="https://img.shields.io/badge/Platform-mac-blue" alt="Mac supported">
@@ -15,15 +15,14 @@
 
 **Documentation**: [https://jorricks.github.io/mac-notifications/](https://jorricks.github.io/mac-notifications/)
 
-**Source Code**: [https://github.com/Jorricks/mac-notifications](https://github.com/Jorricks/mac-notifications)
+**Source Code**: [https://github.com/Jorricks/mac-notifications](https://github.com/Jorricks/mac-notifications/)
 
 ---
 
 **mac-notification** is a Python library to make it as easy as possible to create interactable notifications.
 
 ## Features
-- Easy python interface. It's as simple as '`client.create_notification("Team Standup starts now!")`'
-- It does not block your application waiting for a reply. Instead, it spawns processes in the background that are waiting for user interaction to run any callback.
+- Easy python interface. It's as simple as '`client.create_notification(title="Meeting starts now!", subtitle="Team Standup")`'
 - Ability to reply to the notification.
 - Ability to add action buttons.
 - Delayed notifications.
@@ -31,24 +30,15 @@
 
 
 ## Installation
-
 To use mac-notifications, first install it using pip:
 
-    pip install mac-notifications
+<!-- termynal -->
+```
+$ pip install mac-notifications
+---> 100%
+Installed
+```
 
-## Requirements
-Python 3.8+
-
-mac-notifications uses two major libraries for their date and time utilities:
-- [Pendulum](https://github.com/sdispater/pendulum) for its extensions on datetime objects and parsing of durations.
-- [Python-Dateutil](https://github.com/dateutil/dateutil) for its RRule support.
-
-
-## Installation
-
-To use mac-notifications, first install it using pip:
-
-    pip install mac-notifications
 
 ## Requirements
 Python 3.8+
@@ -70,14 +60,8 @@ client.create_notification(
 )
 ```
 
-##  Why did you create this library?
-I wanted a library that did not depend on any non-python tools (so you had to go around and install that), I wanted a library where you install the pip packages, and you are done.
-Later I realised how hard it was to integrate correctly with PyOBJC. Also, I had a hard time finding any examples on how to easily integrate this in a non-blocking fashion with my tool. 
-Hence, I figured I should set it up to be as user-friendly as possible and share it with the world ;)!
-
 
 ## Limitations
-Although there are some limitations, there is no reason to not use it now :v:.
 - When you close a notification, it is possible the Python application does not get this command (This is a limitation of `pyobjc`). Therefor, to prevent it from waiting endlessly, you should define a `callback_timeout`!
 - You need to keep your application running while waiting for the callback to happen.
 - Currently, we are only supporting the old deprecated [user notifications](https://developer.apple.com/documentation/foundation/nsusernotification). Soon we will also make the new implementation available.

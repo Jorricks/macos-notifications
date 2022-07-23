@@ -1,0 +1,29 @@
+name: Latest Changes
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    types:
+      - closed
+  # For manually triggering it
+  workflow_dispatch:
+    inputs:
+      number:
+        description: PR number
+        required: true
+
+jobs:
+  latest-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source-code repository
+        uses: actions/checkout@v2
+
+      - name: Update docs/release-notes.md with newest PR that was merged.
+        uses: docker://tiangolo/latest-changes:0.0.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          latest_changes_file: docs/release-notes.md
+          latest_changes_header: '## Latest Changes\n\n'
+          debug_logs: true

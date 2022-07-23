@@ -1,0 +1,98 @@
+# Project information
+site_name: mac-notifications
+site_url: https://jorricks.github.io/mac-notifications
+site_author: Jorrick Sleijster
+site_description: Mac Notifications - Simple interactable Mac notifications without any external dependencies.
+
+# Repository
+repo_name: jorricks/mac-notifications
+repo_url: https://github.com/jorricks/mac-notifications
+
+
+# Copyright
+copyright: Copyright &copy; 2022 Jorrick Sleijster
+
+# Configuration
+theme:
+  icon:
+    logo: material/calendar-heart
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+# Plugins
+plugins:
+  - search
+  - termynal
+  - autorefs
+  - mkdocstrings:
+      enable_inventory: true
+      handlers:
+        python:
+          import:
+          - https://docs.python.org/3/objects.inv
+          - https://dateutil.readthedocs.io/en/stable/objects.inv
+# Unfortunately pendulum does not offer an objects.inv as of now:
+# https://github.com/sdispater/pendulum/issues/190
+          options:
+            filters:
+              - "!__repr__"
+              - "!__eq__"
+            annotations_path: brief
+            show_root_heading: true
+            show_root_full_path: false
+            docstring_style: sphinx
+            show_signature_annotations: false
+            show_source: true
+            docstring_options:
+              ignore_init_summary: yes
+
+# Customization
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Jorricks/mac-notifications
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/user/jorricks/
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/jorricks/
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.superfences
+
+# Page tree
+nav:
+  - Home: index.md
+  - User guide: user_guide.md
+  - Examples:
+      - Simple: example/notification_simple.md
+      - Reply button: example/cache_client.md
+      - Join Zoom meeting: examples/notification_with_zoom_action.md
+  - Code documentation:
+      - Client: code/client.md
+      - Config: code/notification_config.md
+      - Process: code/notification_process.md
+      - Sender: code/notification_sender.md
+      - Singleton: code/singleton.md
+  - Frequently asked questions: faq.md
+  - Release notes: release-notes.md
