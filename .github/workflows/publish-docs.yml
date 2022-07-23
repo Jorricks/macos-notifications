@@ -4,13 +4,15 @@ on:
     branches:
       - main
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  deploy-on-macos:
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v4
         with:
           python-version: '3.8'
-      - name: Install MkDocs dependencies
-        run: pip install -r .github/mkdocs-requirements.txt
+      - name: Install Flit
+        run: pip install flit
+      - name: Install Dependencies
+        run: flit install --symlink --extras docs
       - run: mkdocs gh-deploy --force
