@@ -11,8 +11,6 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.8'
-      - name: Install Flit
-        run: pip install flit
-      - name: Install Dependencies
-        run: flit install --symlink --extras docs
+      - name: Install MkDocs dependencies
+        run: pip install -r .github/mkdocs-requirements.txt
       - run: mkdocs gh-deploy --force
