@@ -30,7 +30,7 @@
 - 📝 Ability to reply to notifications!
 - ⌚ Delayed notifications.
 - ⏱️ Automatically time out the notification listener.
-- 📦 Just two packages (which is really just one package) as a dependency
+- 📦 Just `pyobjc` as a dependency.
 
 
 ## Installation
@@ -42,13 +42,6 @@ $ pip install macos-notifications
 ---> 100%
 Installed
 ```
-
-
-## Requirements
-Python 3.8+
-
-Mac-notification only relies on `pyobjc`:
-- The [PyObjC project](https://pyobjc.readthedocs.io/) aims to provide a bridge between the Python and Objective-C programming languages on macOS.
 
 ## Example
 A simple example. Please look [in the docs](https://jorricks.github.io/macos-notifications/) for more examples.
