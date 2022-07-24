@@ -21,7 +21,6 @@ class NotificationConfig:
     text: str | None
     icon: str | None
     delay: timedelta
-    callback_timeout: timedelta | None
     action_button_str: str | None
     action_callback: Callable[[], None] | None
     reply_button_str: str | None
@@ -44,7 +43,6 @@ class NotificationConfig:
             text=NotificationConfig.c_compliant(self.text),
             icon=self.icon,
             delay_in_seconds=(self.delay or timedelta()).total_seconds(),
-            callback_timeout_in_seconds=(self.callback_timeout or timedelta()).total_seconds(),
             action_button_str=NotificationConfig.c_compliant(self.action_button_str),
             action_callback_present=bool(self.action_callback),
             reply_button_str=NotificationConfig.c_compliant(self.reply_button_str),
@@ -59,10 +57,10 @@ class JSONNotificationConfig:
     """
     This notification configuration class that only contains serializable parts.
 
-    This class is required because waiting for the Callback is a blocking operation.
-    Because it is a blocking operation, if we want to be able to receive Callbacks from multiple notifications at once,
-    we need to open them in separate processes (I tried threads first, but that doesn't work :'( ). To be able to
-    transfer the data from the notification to the other process, all the arguments should be serializable. As
+    This class is required because waiting for user interaction with a notification is a blocking operation.
+    Because it is a blocking operation, if we want to be able to receive any user interaction from the notification,
+    without completely halting/freezing our main process, we need to open it in a background process. However, to be
+    able to transfer the data from the notification to the other process, all the arguments should be serializable. As
     callbacks/functions are not serializable, we replaced them by booleans on whether it contained a callback or not.
     Once a callback should be triggered, we send a message over a multiprocessing Queue and trigger the callback in
     the main process.
@@ -72,7 +70,6 @@ class JSONNotificationConfig:
     text: str | None
     icon: str | None
     delay_in_seconds: float
-    callback_timeout_in_seconds: float
     action_button_str: str | None
     action_callback_present: bool
     reply_button_str: str | None

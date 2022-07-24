@@ -12,8 +12,19 @@ from mac_notifications.notification_config import JSONNotificationConfig
 
 logger = logging.getLogger()
 
+"""
+This module is responsible for creating the notifications in the C-layer and listening/reporting about user activity.
+"""
 
-def create_notification(queue: SimpleQueue, config: JSONNotificationConfig, listen: bool = False) -> Any:
+
+def create_notification(config: JSONNotificationConfig, queue_to_submit_events_to: SimpleQueue | None) -> Any:
+    """
+    Create a notification and possibly listed & report about notification activity.
+    :param config: The configuration of the notification to send.
+    :param queue_to_submit_events_to: The Queue to submit user activity related to the callbacks to. If this argument
+    is passed, it will start the event listener after it created the Notifications. If this is None, it will only
+    create the notification.
+    """
     class MacOSNotification(NSObject):
         def send(self):
             """Sending of the notification"""
@@ -29,7 +40,6 @@ def create_notification(queue: SimpleQueue, config: JSONNotificationConfig, list
                 url = NSURL.alloc().initWithString_(f"file://{config.icon}")
                 image = NSImage.alloc().initWithContentsOfURL_(url)
                 notification.setContentImage_(image)
-                # notification.set_contentImageData_()
 
             # Notification buttons (main action button and other button)
             if config.action_button_str:
@@ -39,7 +49,6 @@ def create_notification(queue: SimpleQueue, config: JSONNotificationConfig, list
             if config.snooze_button_str:
                 notification.setOtherButtonTitle_(config.snooze_button_str)
 
-            # Reply button
             if config.reply_callback_present:
                 notification.setHasReplyButton_(True)
                 if config.reply_button_str:
@@ -56,7 +65,7 @@ def create_notification(queue: SimpleQueue, config: JSONNotificationConfig, list
             NSUserNotificationCenter.defaultUserNotificationCenter().scheduleNotification_(notification)
 
             # Wait for the notification CallBack to happen.
-            if listen:
+            if queue_to_submit_events_to:
                 logger.debug("Started listening for user interactions with notifications.")
                 AppHelper.runConsoleEventLoop()
 
@@ -81,10 +90,10 @@ def create_notification(queue: SimpleQueue, config: JSONNotificationConfig, list
                 pass
 
             elif activation_type == 2:  # user clicked on the action button
-                queue.put((identifier, "action_button_clicked", ""))
+                queue_to_submit_events_to.put((identifier, "action_button_clicked", ""))
 
             elif activation_type == 3:  # User clicked on the reply button
-                queue.put((identifier, "reply_button_clicked", response.string()))
+                queue_to_submit_events_to.put((identifier, "reply_button_clicked", response.string()))
 
     # create the new notification
     new_notif = MacOSNotification.alloc().init()
