@@ -23,7 +23,6 @@ def create_notification_for_meeting(description: str, zoom_conf_number: Optional
         title="Meeting starts now!",
         subtitle=description,
         icon=path_to_icon,
-        callback_timeout=timedelta(seconds=10),
         action_button_str="Join zoom meeting",
         action_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number),
     )

@@ -14,7 +14,6 @@ def notification_with_reply_button():
         text="Hello, I contain info",
         icon=Path(__file__).parent / "zoom.png",
         delay=timedelta(milliseconds=500),
-        callback_timeout=timedelta(seconds=10),
         reply_button_str="Reply to this notification",
         reply_callback=lambda reply: print(f"Replied {reply=}"),
         snooze_button_str="Or click me",

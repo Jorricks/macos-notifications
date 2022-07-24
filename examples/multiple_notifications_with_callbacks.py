@@ -8,7 +8,6 @@ def notification_with_action_button() -> None:
     client.create_notification(
         title="Action notification",
         subtitle="Subtitle of the notification",
-        callback_timeout=timedelta(seconds=20),
         action_button_str="Perform an action",
         action_callback=lambda: print(f"Pressed action button"),
     )
