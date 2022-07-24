@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from multiprocessing import Queue
 from typing import Any
 
@@ -8,7 +10,7 @@ from PyObjCTools import AppHelper
 from mac_notifications.notification_config import JSONNotificationConfig
 
 
-def send_notification(queue: Queue, config: JSONNotificationConfig) -> Any:
+def create_notification(queue: Queue, config: JSONNotificationConfig) -> Any:
     class MacOSNotification(NSObject):
         def send(self):
             """Sending of the notification"""
@@ -26,14 +28,15 @@ def send_notification(queue: Queue, config: JSONNotificationConfig) -> Any:
                 image = NSImage.alloc().initWithContentsOfURL_(url)
                 notification.setContentImage_(image)
                 # notification.set_contentImageData_()
+            notification.setIdentifier_(config.uid)
 
             # Notification buttons (main action button and other button)
             if config.action_button_str:
                 notification.setActionButtonTitle_(config.action_button_str)
                 notification.setHasActionButton_(True)
 
-            if config.do_nothing_button_str:
-                notification.setOtherButtonTitle_(config.do_nothing_button_str)
+            if config.snooze_button_str:
+                notification.setOtherButtonTitle_(config.snooze_button_str)
 
             # Reply button
             if config.reply_callback_present:
@@ -56,29 +59,28 @@ def send_notification(queue: Queue, config: JSONNotificationConfig) -> Any:
                 print("Started listening.")
                 AppHelper.runConsoleEventLoop()
 
-        def userNotificationCenter_didDeliverNotification_(self, center, notif) -> None:
+        def userNotificationCenter_didDeliverNotification_(
+            self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore
+        ) -> None:
             """
             Respond to the delivering of the notification.
-            :param center:
-            :type center: _NSConcreteUserNotificationCenter
-            :param notif:
-            :param: center: _NSConcreteUserNotification
             """
             print("Delivered notification.")
-            # print("center:", type(center), dir(center))
-            # print("notif:", type(notif), dir(notif))
+            print("center:", type(center), dir(center))
+            print("notif:", type(notif), dir(notif))
+            print("identifier from mac:", notif.identifier())
 
-        def userNotificationCenter_didActivateNotification_(self, center, notif):
+        def userNotificationCenter_didActivateNotification_(
+            self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore
+        ) -> None:
             """
             Respond to a user interaction with the notification.
-            :param center:
-            :type center: _NSConcreteUserNotificationCenter
-            :param notif:
-            :param: center: _NSConcreteUserNotification
-            :return:
             """
             response = notif.response()
-            print("User interacted with the notification.")
+            print(f"User interacted with {config.uid}.")
+            print(center)
+            print(notif)
+            print("identifier from mac:", notif.identifier())
 
             if notif.activationType() == 1:
                 # user clicked on the notification (not on a button)

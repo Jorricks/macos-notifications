@@ -22,12 +22,12 @@
 **mac-notification** is a Python library to make it as easy as possible to create interactable notifications.
 
 ## Features
-- Easy python interface. It's as simple as '`client.create_notification("Team Standup starts now!")`'
-- It does not block your application waiting for a reply. Instead, it spawns processes in the background that are waiting for user interaction to run any callback.
-- Ability to reply to the notification.
-- Ability to add action buttons.
-- Delayed notifications.
-- Automatically time out the notification listener.
+- 🚀 Easy python interface. It's as simple as '`client.create_notification(title="Meeting starts now!", subtitle="Team Standup")`'
+- 💥 Ability to add action buttons.
+- 📝 Ability to reply to the notification.
+- ⌚ Delayed notifications.
+- ⏱️ Automatically time out the notification listener.
+- 📦 Just two packages (which is really just one package) as a dependency
 
 
 ## Installation

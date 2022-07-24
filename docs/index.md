@@ -1,6 +1,6 @@
-# mac-notifications
+# Mac Notifications
 <p align="center">
-  <a href="https://jorricks.github.io/mac-notifications"><img src="mac-notifications.png" alt="mac-notifications" width="600px"></a>
+  <a href="https://jorricks.github.io/mac-notifications"><img src="mac-notifications.png" alt="mac-notifications" width="800px"></a>
 </p>
 <p align="center">
 <a href="https://www.apple.com/mac/" target="_blank">
@@ -22,11 +22,12 @@
 **mac-notification** is a Python library to make it as easy as possible to create interactable notifications.
 
 ## Features
-- Easy python interface. It's as simple as '`client.create_notification(title="Meeting starts now!", subtitle="Team Standup")`'
-- Ability to reply to the notification.
-- Ability to add action buttons.
-- Delayed notifications.
-- Automatically time out the notification listener.
+- 🚀 Easy python interface. It's as simple as '`client.create_notification(title="Meeting starts now!", subtitle="Team Standup")`'
+- 💥 Ability to add action buttons.
+- 📝 Ability to reply to the notification.
+- ⌚ Delayed notifications.
+- ⏱️ Automatically time out the notification listener.
+- 📦 Just two packages (which is really just one package) as a dependency
 
 
 ## Installation

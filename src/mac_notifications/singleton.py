@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from threading import Lock
 from typing import Any, Dict, Type
 

@@ -41,9 +41,7 @@ plugins:
         python:
           import:
           - https://docs.python.org/3/objects.inv
-          - https://dateutil.readthedocs.io/en/stable/objects.inv
-# Unfortunately pendulum does not offer an objects.inv as of now:
-# https://github.com/sdispater/pendulum/issues/190
+          - https://pyobjc.readthedocs.io/en/latest/objects.inv
           options:
             filters:
               - "!__repr__"
@@ -52,6 +50,7 @@ plugins:
             show_root_heading: true
             show_root_full_path: false
             docstring_style: sphinx
+            line_length: 120
             show_signature_annotations: false
             show_source: true
             docstring_options:
@@ -84,10 +83,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - User guide: user_guide.md
-  - Examples:
-      - Simple: example/notification_simple.md
-      - Reply button: example/cache_client.md
-      - Join Zoom meeting: examples/notification_with_zoom_action.md
+  - Examples: examples.md
   - Code documentation:
       - Client: code/client.md
       - Config: code/notification_config.md

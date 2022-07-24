@@ -1,30 +1,40 @@
+from __future__ import annotations
+
 import uuid
 from dataclasses import dataclass, field
 from datetime import timedelta
-from typing import Callable, Optional
+from typing import Callable
+
+
+"""
+The dataclasses that represent a Notification configuration.
+"""
 
 
 @dataclass
 class NotificationConfig:
+    """
+    The standard representation of a Notifications. This is used inside the main process.
+    """
     title: str
-    subtitle: Optional[str]
-    text: Optional[str]
-    icon: Optional[str]
+    subtitle: str | None
+    text: str | None
+    icon: str | None
     delay: timedelta
-    notification_timeout: Optional[timedelta]
-    action_button_str: Optional[str]
-    action_button_callback: Optional[Callable[[], None]]
-    reply_button_str: Optional[str]
-    reply_callback: Optional[Callable[[str], None]]
-    do_nothing_button_str: Optional[str]
+    callback_timeout: timedelta | None
+    action_button_str: str | None
+    action_callback: Callable[[], None] | None
+    reply_button_str: str | None
+    reply_callback: Callable[[str], None] | None
+    snooze_button_str: str | None
     uid: str = field(default_factory=lambda: uuid.uuid4().hex)
 
     @property
     def contains_callback(self) -> bool:
-        return bool(self.action_button_callback or self.reply_callback)
+        return bool(self.action_callback or self.reply_callback)
 
     @staticmethod
-    def c_compliant(a_str: Optional[str]) -> Optional[str]:
+    def c_compliant(a_str: str | None) -> str | None:
         return "".join(filter(lambda x: bool(str.isalnum or str.isspace), a_str)) if a_str else None  # type: ignore
 
     def to_json_notification(self) -> "JSONNotificationConfig":
@@ -34,31 +44,42 @@ class NotificationConfig:
             text=NotificationConfig.c_compliant(self.text),
             icon=self.icon,
             delay_in_seconds=(self.delay or timedelta()).total_seconds(),
-            notification_timeout_in_seconds=(self.notification_timeout or timedelta()).total_seconds(),
+            callback_timeout_in_seconds=(self.callback_timeout or timedelta()).total_seconds(),
             action_button_str=NotificationConfig.c_compliant(self.action_button_str),
-            action_button_callback_present=bool(self.action_button_callback),
+            action_callback_present=bool(self.action_callback),
             reply_button_str=NotificationConfig.c_compliant(self.reply_button_str),
             reply_callback_present=bool(self.reply_callback),
-            do_nothing_button_str=NotificationConfig.c_compliant(self.do_nothing_button_str),
+            snooze_button_str=NotificationConfig.c_compliant(self.snooze_button_str),
             uid=self.uid,
         )
 
 
 @dataclass
 class JSONNotificationConfig:
+    """
+    This notification configuration class that only contains serializable parts.
+
+    This class is required because waiting for the Callback is a blocking operation.
+    Because it is a blocking operation, if we want to be able to receive Callbacks from multiple notifications at once,
+    we need to open them in separate processes (I tried threads first, but that doesn't work :'( ). To be able to
+    transfer the data from the notification to the other process, all the arguments should be serializable. As
+    callbacks/functions are not serializable, we replaced them by booleans on whether it contained a callback or not.
+    Once a callback should be triggered, we send a message over a multiprocessing Queue and trigger the callback in
+    the main process.
+    """
     title: str
-    subtitle: Optional[str]
-    text: Optional[str]
-    icon: Optional[str]
+    subtitle: str | None
+    text: str | None
+    icon: str | None
     delay_in_seconds: float
-    notification_timeout_in_seconds: float
-    action_button_str: Optional[str]
-    action_button_callback_present: bool
-    reply_button_str: Optional[str]
+    callback_timeout_in_seconds: float
+    action_button_str: str | None
+    action_callback_present: bool
+    reply_button_str: str | None
     reply_callback_present: bool
-    do_nothing_button_str: Optional[str]
+    snooze_button_str: str | None
     uid: str
 
     @property
     def contains_callback(self) -> bool:
-        return bool(self.action_button_callback_present or self.reply_callback_present)
+        return bool(self.action_callback_present or self.reply_callback_present)

@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import subprocess
 import time
+from datetime import timedelta
 from functools import partial
 from pathlib import Path
 from typing import Optional, Union
@@ -13,12 +16,6 @@ def join_zoom_meeting(conf_number: Union[int, str]) -> None:
     print(f"Opened zoom into meeting with {conf_number=}.")
 
 
-def open_zoom() -> None:
-    """This opens and sets the focus onto the Zoom application."""
-    subprocess.run("open -a zoom.us.app", shell=True)
-    print("Opened zoom")
-
-
 def create_notification_for_meeting(description: str, zoom_conf_number: Optional[str]) -> None:
     """Create a notification for a meeting."""
     path_to_icon = Path(__file__).parent / "zoom.png"
@@ -26,8 +23,9 @@ def create_notification_for_meeting(description: str, zoom_conf_number: Optional
         title="Meeting starts now!",
         subtitle=description,
         icon=path_to_icon,
+        callback_timeout=timedelta(seconds=10),
         action_button_str="Join zoom meeting",
-        action_button_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number),
+        action_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number),
     )
     print(f"Created notification to join meeting {zoom_conf_number} :)")
 
