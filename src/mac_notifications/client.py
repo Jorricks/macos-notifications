@@ -5,8 +5,8 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Callable
 
+from mac_notifications.manager import NotificationManager
 from mac_notifications.notification_config import NotificationConfig
-from mac_notifications.notification_manager import NotificationManager
 
 """
 This serves as the entrypoint for our users. They should only need to use this file.

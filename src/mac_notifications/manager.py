@@ -6,12 +6,12 @@ import signal
 import sys
 import time
 from multiprocessing import SimpleQueue
-from threading import Thread, Event
+from threading import Event, Thread
 from typing import Dict, List
 
 from mac_notifications import notification_sender
+from mac_notifications.listener_process import NotificationListenerProcess
 from mac_notifications.notification_config import NotificationConfig
-from mac_notifications.notification_process import NotificationListenerProcess
 from mac_notifications.singleton import Singleton
 
 """
@@ -37,6 +37,7 @@ class NotificationManager(metaclass=Singleton):
     - Starting new notifications.
     - Starting the Callback Executor thread in the background.
     """
+
     def __init__(self):
         self._callback_queue: SimpleQueue = SimpleQueue()
         self._callback_executor_event: Event = Event()
@@ -65,10 +66,10 @@ class NotificationManager(metaclass=Singleton):
         json_config = notification_config.to_json_notification()
         if not notification_config.contains_callback or self._callback_listener_process is not None:
             # We can send it directly from this thread.
-            notification_sender.create_notification(self._callback_queue, json_config).send()
+            notification_sender.create_notification(json_config, None).send()
         else:
             # We need to also start a listener, so we send the json through a separate process.
-            self._callback_listener_process = NotificationListenerProcess(self._callback_queue, json_config)
+            self._callback_listener_process = NotificationListenerProcess(json_config, self._callback_queue)
             self._callback_listener_process.start()
             self.create_callback_executor_thread()
 
@@ -114,6 +115,7 @@ class CallbackExecutorThread(Thread):
     """
     Background threat that checks each 0.1 second whether there are any callbacks that it should execute.
     """
+
     def __init__(self, keep_running: Event, callback_queue: SimpleQueue):
         super().__init__()
         self.event_indicating_to_continue = keep_running
@@ -140,11 +142,17 @@ class CallbackExecutorThread(Thread):
             if event_id == "action_button_clicked":
                 notification_config = _NOTIFICATION_MAP.pop(notification_uid)
                 logger.debug(f"Executing reply callback for notification {notification_config.title}.")
-                notification_config.action_callback()
+                if notification_config.action_callback is None:
+                    raise ValueError(f"Notifications action button pressed without callback: {notification_config}.")
+                else:
+                    notification_config.action_callback()
             elif event_id == "reply_button_clicked":
                 notification_config = _NOTIFICATION_MAP.pop(notification_uid)
                 logger.debug(f"Executing reply callback for notification {notification_config.title}, {reply_text}.")
-                notification_config.reply_callback(reply_text)
+                if notification_config.reply_callback is None:
+                    raise ValueError(f"Notifications reply button pressed without callback: {notification_config}.")
+                else:
+                    notification_config.reply_callback(reply_text)
             else:
                 raise ValueError(f"Unknown event_id: {event_id}.")
             clear_notification_from_existence(notification_uid)

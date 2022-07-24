@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 from datetime import timedelta
 from typing import Callable
 
-
 """
 The dataclasses that represent a Notification configuration.
 """
@@ -16,6 +15,7 @@ class NotificationConfig:
     """
     The standard representation of a Notifications. This is used inside the main process.
     """
+
     title: str
     subtitle: str | None
     text: str | None
@@ -65,6 +65,7 @@ class JSONNotificationConfig:
     Once a callback should be triggered, we send a message over a multiprocessing Queue and trigger the callback in
     the main process.
     """
+
     title: str
     subtitle: str | None
     text: str | None

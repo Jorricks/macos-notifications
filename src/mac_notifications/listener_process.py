@@ -15,11 +15,12 @@ class NotificationListenerProcess(Process):
     Because it is a blocking operation, if we want to be able to receive any user interaction from the notification,
     without completely halting/freezing our main process, we need to open it in a background process.
     """
-    def __init__(self, queue: SimpleQueue, notification_config: JSONNotificationConfig):
+
+    def __init__(self, notification_config: JSONNotificationConfig, queue: SimpleQueue):
         super().__init__()
         self.notification_config = notification_config
-        self._queue = queue
+        self.queue = queue
 
     def run(self) -> None:
-        notification_sender.create_notification(self._queue, self.notification_config, True).send()
+        notification_sender.create_notification(self.notification_config, self.queue).send()
         # on if any of the callbacks are provided, start the event loop (this will keep the program from stopping)

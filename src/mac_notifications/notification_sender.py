@@ -25,6 +25,7 @@ def create_notification(config: JSONNotificationConfig, queue_to_submit_events_t
     is passed, it will start the event listener after it created the Notifications. If this is None, it will only
     create the notification.
     """
+
     class MacOSNotification(NSObject):
         def send(self):
             """Sending of the notification"""
@@ -70,13 +71,13 @@ def create_notification(config: JSONNotificationConfig, queue_to_submit_events_t
                 AppHelper.runConsoleEventLoop()
 
         def userNotificationCenter_didDeliverNotification_(
-            self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore
+            self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore  # noqa
         ) -> None:
             """Respond to the delivering of the notification."""
             logger.debug(f"Delivered: {notif.identifier()}")
 
         def userNotificationCenter_didActivateNotification_(
-            self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore
+            self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore  # noqa
         ) -> None:
             """
             Respond to a user interaction with the notification.
@@ -84,16 +85,22 @@ def create_notification(config: JSONNotificationConfig, queue_to_submit_events_t
             identifier = notif.identifier()
             response = notif.response()
             activation_type = notif.activationType()
+
+            if queue_to_submit_events_to is None:
+                raise ValueError("Queue should not be None here.")
+            else:
+                queue: SimpleQueue = queue_to_submit_events_to
+
             logger.debug(f"User interacted with {identifier} with activationType {activation_type}.")
             if activation_type == 1:
                 # user clicked on the notification (not on a button)
                 pass
 
             elif activation_type == 2:  # user clicked on the action button
-                queue_to_submit_events_to.put((identifier, "action_button_clicked", ""))
+                queue.put((identifier, "action_button_clicked", ""))
 
             elif activation_type == 3:  # User clicked on the reply button
-                queue_to_submit_events_to.put((identifier, "reply_button_clicked", response.string()))
+                queue.put((identifier, "reply_button_clicked", response.string()))
 
     # create the new notification
     new_notif = MacOSNotification.alloc().init()
