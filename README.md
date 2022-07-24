@@ -29,21 +29,6 @@
 - ⏱️ Automatically time out the notification listener.
 - 📦 Just two packages (which is really just one package) as a dependency
 
-
-## Installation
-
-To use mac-notifications, first install it using pip:
-
-    pip install mac-notifications
-
-## Requirements
-Python 3.8+
-
-mac-notifications uses two major libraries for their date and time utilities:
-- [Pendulum](https://github.com/sdispater/pendulum) for its extensions on datetime objects and parsing of durations.
-- [Python-Dateutil](https://github.com/dateutil/dateutil) for its RRule support.
-
-
 ## Installation
 
 To use mac-notifications, first install it using pip:
