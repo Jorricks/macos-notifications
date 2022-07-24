@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/Jorricks/mac-notifications"><img src="https://github.com/Jorricks/mac-notifications/raw/main/docs/mac-notifications.png" alt="mac-notifications" width="600px"></a>
+  <a href="https://github.com/Jorricks/macos-notifications"><img src="https://github.com/Jorricks/macos-notifications/raw/main/docs/macos-notifications.png" alt="macos-notifications" width="600px"></a>
 </p>
 <p align="center">
 <p align="center">
@@ -13,9 +13,9 @@
 
 ---
 
-**Documentation**: [https://jorricks.github.io/mac-notifications/](https://jorricks.github.io/mac-notifications/)
+**Documentation**: [https://jorricks.github.io/macos-notifications/](https://jorricks.github.io/macos-notifications/)
 
-**Source Code**: [https://github.com/Jorricks/mac-notifications](https://github.com/Jorricks/mac-notifications)
+**Source Code**: [https://github.com/Jorricks/macos-notifications](https://github.com/Jorricks/macos-notifications)
 
 ---
 
@@ -31,9 +31,9 @@
 
 ## Installation
 
-To use mac-notifications, first install it using pip:
+To use macos-notifications, first install it using pip:
 
-    pip install mac-notifications
+    pip install macos-notifications
 
 ## Requirements
 Python 3.8+
@@ -42,7 +42,7 @@ Mac-notification only relies on `pyobjc`:
 - The [PyObjC project](https://pyobjc.readthedocs.io/) aims to provide a bridge between the Python and Objective-C programming languages on macOS.
 
 ## Example
-A simple example. Please look [in the docs](https://jorricks.github.io/mac-notifications/) for more examples.
+A simple example. Please look [in the docs](https://jorricks.github.io/macos-notifications/) for more examples.
 
 ```python
 from pathlib import Path

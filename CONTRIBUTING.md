@@ -1,6 +1,6 @@
-# Contributing to mac-notifications
+# Contributing to macos-notifications
 
-As an open source project, mac-notifications welcomes contributions of many forms.
+As an open source project, macos-notifications welcomes contributions of many forms.
 This document summarizes the process.
 
 Examples of contributions include:

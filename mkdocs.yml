@@ -1,12 +1,12 @@
 # Project information
-site_name: mac-notifications
-site_url: https://jorricks.github.io/mac-notifications
+site_name: macos-notifications
+site_url: https://jorricks.github.io/macos-notifications
 site_author: Jorrick Sleijster
 site_description: Mac Notifications - Simple interactable Mac notifications without any external dependencies.
 
 # Repository
-repo_name: jorricks/mac-notifications
-repo_url: https://github.com/jorricks/mac-notifications
+repo_name: jorricks/macos-notifications
+repo_url: https://github.com/jorricks/macos-notifications
 
 
 # Copyright
@@ -60,7 +60,7 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/Jorricks/mac-notifications
+      link: https://github.com/Jorricks/macos-notifications
     - icon: fontawesome/brands/python
       link: https://pypi.org/user/jorricks/
     - icon: fontawesome/brands/linkedin

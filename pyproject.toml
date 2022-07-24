@@ -57,11 +57,11 @@ dev = [
 
 
 [project.urls]
-Home = "https://github.com/Jorricks/mac-notifications"
-Documentation = "https://jorricks.github.io/mac-notifications"
-Source = "https://github.com/Jorricks/mac-notifications"
-PullRequests = "https://github.com/Jorricks/mac-notifications/pulls"
-Issues = "https://github.com/Jorricks/mac-notifications/issues"
+Home = "https://github.com/Jorricks/macos-notifications"
+Documentation = "https://jorricks.github.io/macos-notifications"
+Source = "https://github.com/Jorricks/macos-notifications"
+PullRequests = "https://github.com/Jorricks/macos-notifications/pulls"
+Issues = "https://github.com/Jorricks/macos-notifications/issues"
 
 [tool.flit.module]
 name = "mac_notifications"
