@@ -23,8 +23,8 @@
 
 ## Features
 - 🚀 Easy python interface. It's as simple as '`client.create_notification(title="Meeting starts now!", subtitle="Team Standup")`'
-- 💥 Ability to add action buttons.
-- 📝 Ability to reply to the notification.
+- 💥 Ability to add action buttons with callbacks!
+- 📝 Ability to reply to notifications!
 - ⌚ Delayed notifications.
 - ⏱️ Automatically time out the notification listener.
 - 📦 Just two packages (which is really just one package) as a dependency
@@ -51,6 +51,7 @@ Mac-notification only relies on `pyobjc`:
 A simple example. Please look [in the docs](https://jorricks.github.io/mac-notifications/) for more examples.
 
 ```python
+from mac_notifications import client
 
 client.create_notification(
     title="Meeting starts now!",
