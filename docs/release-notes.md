@@ -2,6 +2,9 @@
 
 ## Latest changes
 
+## 0.1.1
+- 📝 Fix broken image in documentation
+
 ## 0.1.0
 - 🔧 Rename all references of mac-notifications to macos-notifications
 
