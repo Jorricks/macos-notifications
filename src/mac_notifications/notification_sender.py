@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from multiprocessing import Queue
+import logging
+from multiprocessing import SimpleQueue
 from typing import Any
 
 from AppKit import NSImage
@@ -9,14 +10,15 @@ from PyObjCTools import AppHelper
 
 from mac_notifications.notification_config import JSONNotificationConfig
 
+logger = logging.getLogger()
 
-def create_notification(queue: Queue, config: JSONNotificationConfig) -> Any:
+
+def create_notification(queue: SimpleQueue, config: JSONNotificationConfig, listen: bool = False) -> Any:
     class MacOSNotification(NSObject):
         def send(self):
             """Sending of the notification"""
             notification = NSUserNotification.alloc().init()
-            print(config)
-
+            notification.setIdentifier_(config.uid)
             if config is not None:
                 notification.setTitle_(config.title)
             if config.subtitle is not None:
@@ -28,7 +30,6 @@ def create_notification(queue: Queue, config: JSONNotificationConfig) -> Any:
                 image = NSImage.alloc().initWithContentsOfURL_(url)
                 notification.setContentImage_(image)
                 # notification.set_contentImageData_()
-            notification.setIdentifier_(config.uid)
 
             # Notification buttons (main action button and other button)
             if config.action_button_str:
@@ -55,20 +56,15 @@ def create_notification(queue: Queue, config: JSONNotificationConfig) -> Any:
             NSUserNotificationCenter.defaultUserNotificationCenter().scheduleNotification_(notification)
 
             # Wait for the notification CallBack to happen.
-            if config.contains_callback:
-                print("Started listening.")
+            if listen:
+                logger.debug("Started listening for user interactions with notifications.")
                 AppHelper.runConsoleEventLoop()
 
         def userNotificationCenter_didDeliverNotification_(
             self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore
         ) -> None:
-            """
-            Respond to the delivering of the notification.
-            """
-            print("Delivered notification.")
-            print("center:", type(center), dir(center))
-            print("notif:", type(notif), dir(notif))
-            print("identifier from mac:", notif.identifier())
+            """Respond to the delivering of the notification."""
+            logger.debug(f"Delivered: {notif.identifier()}")
 
         def userNotificationCenter_didActivateNotification_(
             self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore
@@ -76,27 +72,19 @@ def create_notification(queue: Queue, config: JSONNotificationConfig) -> Any:
             """
             Respond to a user interaction with the notification.
             """
+            identifier = notif.identifier()
             response = notif.response()
-            print(f"User interacted with {config.uid}.")
-            print(center)
-            print(notif)
-            print("identifier from mac:", notif.identifier())
-
-            if notif.activationType() == 1:
+            activation_type = notif.activationType()
+            logger.debug(f"User interacted with {identifier} with activationType {activation_type}.")
+            if activation_type == 1:
                 # user clicked on the notification (not on a button)
-                # don't stop event loop because the other buttons can still be pressed
                 pass
 
-            elif notif.activationType() == 2:
-                # user clicked on the action button
-                queue.put((config.uid, "action_button_clicked", ""), block=True, timeout=1.0)
-                AppHelper.stopEventLoop()
+            elif activation_type == 2:  # user clicked on the action button
+                queue.put((identifier, "action_button_clicked", ""))
 
-            elif notif.activationType() == 3:
-                # User clicked on the reply button
-                reply_text = response.string()
-                queue.put((config.uid, "reply_button_clicked", reply_text))
-                AppHelper.stopEventLoop()
+            elif activation_type == 3:  # User clicked on the reply button
+                queue.put((identifier, "reply_button_clicked", response.string()))
 
     # create the new notification
     new_notif = MacOSNotification.alloc().init()

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from datetime import timedelta
 from pathlib import Path
 from typing import Callable
@@ -11,10 +12,17 @@ from mac_notifications.notification_manager import NotificationManager
 This serves as the entrypoint for our users. They should only need to use this file.
 """
 
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger()
+
 
 def get_notification_manager() -> NotificationManager:
     """Return the NotificationManager object."""
     return NotificationManager()
+
+
+def stop_listening_for_callbacks() -> None:
+    return get_notification_manager().cleanup()
 
 
 def create_notification(

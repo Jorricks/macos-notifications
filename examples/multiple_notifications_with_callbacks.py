@@ -27,8 +27,11 @@ def notification_with_reply_button():
 if __name__ == "__main__":
     print(f"Active number of notifications: {client.get_notification_manager().get_active_running_notifications()}")
     notification_with_reply_button()
-    time.sleep(5)
+    time.sleep(2)
+    client.stop_listening_for_callbacks()
+    time.sleep(2)
     notification_with_action_button()
     while client.get_notification_manager().get_active_running_notifications() > 0:
         time.sleep(1)
-    print(f"Active number of notifications: {client.get_notification_manager().get_active_running_notifications()}")
+        print(f"Active number of notifications: {client.get_notification_manager().get_active_running_notifications()}")
+    client.stop_listening_for_callbacks()
