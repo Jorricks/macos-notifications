@@ -2,12 +2,14 @@
   <a href="https://github.com/Jorricks/macos-notifications"><img src="https://github.com/Jorricks/macos-notifications/raw/main/docs/macos-notifications.png" alt="macos-notifications" width="600px"></a>
 </p>
 <p align="center">
-<p align="center">
 <a href="https://www.apple.com/mac/" target="_blank">
     <img src="https://img.shields.io/badge/Platform-mac-blue" alt="Mac supported">
 </a>
-<a href="https://python.org" target="_blank">
-    <img src="https://img.shields.io/badge/Python-3.7%2B-blue" alt="Python 3.7+ supported">
+<a href="https://pypi.org/project/macos-notifications" target="_blank">
+    <img src="https://img.shields.io/pypi/v/macos-notifications?color=%2334D058&label=pypi%20package" alt="Package version">
+</a>
+<a href="https://pypi.org/project/macos-notifications" target="_blank">
+    <img src="https://img.shields.io/pypi/pyversions/macos-notifications.svg?color=%2334D058" alt="Supported Python versions">
 </a>
 </p>
 
