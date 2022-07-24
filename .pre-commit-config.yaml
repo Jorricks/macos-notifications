@@ -17,6 +17,7 @@ repos:
         types:
           - python
         require_serial: true
+        exclude: examples/*
         additional_dependencies:
           - isort==5.10.1
       - id: black

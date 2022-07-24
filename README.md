@@ -60,25 +60,25 @@ Mac-notification only relies on `pyobjc`:
 A simple example. Please look [in the docs](https://jorricks.github.io/mac-notifications/) for more examples.
 
 ```python
+from pathlib import Path
 from mac_notifications import client
 
 client.create_notification(
     title="Meeting starts now!",
     subtitle="Team Standup",
-    icon="/Users/jorrick/zoom.png",
+    icon=Path(__file__).parent / "zoom.png",
     action_button_str="Join zoom meeting",
     action_button_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number)
 )
 ```
 
 ##  Why did you create this library?
-I wanted a library that did not depend on any non-python tools (so you had to go around and install that), I wanted a library where you install the pip packages, and you are done.
+I wanted a library that did not depend on any non-python tools (so you had to go around and install that). Instead, I wanted a library where you install the pip packages, and you are done.
 Later I realised how hard it was to integrate correctly with PyOBJC. Also, I had a hard time finding any examples on how to easily integrate this in a non-blocking fashion with my tool. 
 Hence, I figured I should set it up to be as user-friendly as possible and share it with the world ;)!
 
 
 ## Limitations
 Although there are some limitations, there is no reason to not use it now :v:.
-- When you close a notification, it is possible the Python application does not get this command (This is a limitation of `pyobjc`). Therefor, to prevent it from waiting endlessly, you should define a `callback_timeout`!
 - You need to keep your application running while waiting for the callback to happen.
 - Currently, we are only supporting the old deprecated [user notifications](https://developer.apple.com/documentation/foundation/nsusernotification). Soon we will also make the new implementation available.

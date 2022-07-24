@@ -64,6 +64,5 @@ client.create_notification(
 
 
 ## Limitations
-- When you close a notification, it is possible the Python application does not get this command (This is a limitation of `pyobjc`). Therefor, to prevent it from waiting endlessly, you should define a `callback_timeout`!
 - You need to keep your application running while waiting for the callback to happen.
 - Currently, we are only supporting the old deprecated [user notifications](https://developer.apple.com/documentation/foundation/nsusernotification). Soon we will also make the new implementation available.
