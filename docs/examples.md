@@ -1,5 +1,10 @@
 # Examples
-On this page we will list several examples.
+
+On this page we will list several examples. Let's start with a demonstration of the last example of this page.
+
+<p align="center">
+<a href="#Multiple notifications"><img src="../img/example-run.gif" alt="macos-notifications" width="800px"></a>
+</p>
 
 ## Simple notification
 ```python

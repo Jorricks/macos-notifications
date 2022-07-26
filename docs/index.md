@@ -1,6 +1,6 @@
 # Mac Notifications
 <p align="center">
-  <a href="https://jorricks.github.io/macos-notifications"><img src="macos-notifications.png" alt="macos-notifications" width="800px"></a>
+  <a href="https://jorricks.github.io/macos-notifications"><img src="img/macos-notifications.png" alt="macos-notifications" width="800px"></a>
 </p>
 <p align="center">
 <a href="https://www.apple.com/mac/" target="_blank">
@@ -24,14 +24,6 @@
 
 **mac-notification** is a Python library to make it as easy as possible to create interactable notifications.
 
-## Features
-- 🚀 Easy python interface. It's as simple as '`client.create_notification(title="Meeting starts now!", subtitle="Team Standup")`'
-- 💥 Ability to add action buttons with callbacks!
-- 📝 Ability to reply to notifications!
-- ⌚ Delayed notifications.
-- ⏱️ Automatically time out the notification listener.
-- 📦 Just `pyobjc` as a dependency.
-
 
 ## Installation
 To use macos-notifications, first install it using pip:
@@ -43,8 +35,16 @@ $ pip install macos-notifications
 Installed
 ```
 
+## Features
+- 🚀 Easy python interface. It's as simple as '`client.create_notification(title="Meeting starts now!", subtitle="Team Standup")`'
+- 💥 Ability to add action buttons with callbacks!
+- 📝 Ability to reply to notifications!
+- ⌚ Delayed notifications.
+- ⏱️ Automatically time out the notification listener.
+- 📦 Just `pyobjc` as a dependency.
+
+
 ## Example
-A simple example. Please look [in the docs](https://jorricks.github.io/macos-notifications/) for more examples.
 
 ```python
 from mac_notifications import client
@@ -57,7 +57,13 @@ client.create_notification(
     action_button_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number)
 )
 ```
+A simple example. Please look [in the docs](https://jorricks.github.io/macos-notifications/) for more examples like this:
 
+<p align="center">
+<a href="https://jorricks.github.io/macos-notifications/examples/">
+<img src="img/example-run.gif" alt="macos-notifications" width="600px">
+</a>
+</p>
 
 ## Limitations
 - You need to keep your application running while waiting for the callback to happen.

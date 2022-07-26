@@ -16,7 +16,7 @@ if __name__ == "__main__":
     client.create_notification(
         title="Meeting starts now!",
         subtitle="Standup. Join please.",
-        icon=Path(__file__).parent / "zoom.png",
+        icon=Path(__file__).parent / "img" / "zoom.png",
         action_button_str="Join zoom meeting",
         action_callback=partial(join_a_meeting, conf_number="12345678"),
     )

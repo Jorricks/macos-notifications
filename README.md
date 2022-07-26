@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/Jorricks/macos-notifications"><img src="https://github.com/Jorricks/macos-notifications/raw/main/docs/macos-notifications.png" alt="macos-notifications" width="600px"></a>
+  <a href="https://github.com/Jorricks/macos-notifications"><img src="https://github.com/Jorricks/macos-notifications/raw/main/docs/img/macos-notifications.png" alt="macos-notifications" width="600px"></a>
 </p>
 <p align="center">
 <a href="https://www.apple.com/mac/" target="_blank">
@@ -23,6 +23,14 @@
 
 **mac-notification** is a Python library to make it as easy as possible to create interactable notifications.
 
+
+## Installation
+
+To use macos-notifications, first install it using pip:
+
+    pip install macos-notifications
+
+
 ## Features
 - 🚀 Easy python interface. It's as simple as '`client.create_notification(title="Meeting starts now!", subtitle="Team Standup")`'
 - 💥 Ability to add action buttons with callbacks!
@@ -31,27 +39,25 @@
 - ⏱️ Automatically time out the notification listener.
 - 📦 Just `pyobjc` as a dependency.
 
-## Installation
-
-To use macos-notifications, first install it using pip:
-
-    pip install macos-notifications
-
 ## Example
-A simple example. Please look [in the docs](https://jorricks.github.io/macos-notifications/) for more examples.
-
 ```python
-from pathlib import Path
 from mac_notifications import client
 
 client.create_notification(
     title="Meeting starts now!",
     subtitle="Team Standup",
-    icon=Path(__file__).parent / "zoom.png",
+    icon="/Users/jorrick/zoom.png",
     action_button_str="Join zoom meeting",
     action_button_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number)
 )
 ```
+A simple example. Please look [in the docs](https://jorricks.github.io/macos-notifications/) for more examples like this:
+
+<p align="center">
+<a href="https://jorricks.github.io/macos-notifications/examples/">
+<img src="https://github.com/Jorricks/macos-notifications/raw/main/docs/img/example-run.gif" alt="macos-notifications" width="600px">
+</a>
+</p>
 
 ##  Why did you create this library?
 I wanted a library that did not depend on any non-python tools (so you had to go around and install that). Instead, I wanted a library where you install the pip packages, and you are done.

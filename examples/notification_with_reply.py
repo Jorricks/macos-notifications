@@ -11,7 +11,7 @@ if __name__ == "__main__":
         title="Cool notification",
         subtitle="Subtitle of the notification",
         text="Hello, I contain info",
-        icon=Path(__file__).parent / "zoom.png",
+        icon=Path(__file__).parent / "img" / "chat.png",
         delay=timedelta(milliseconds=500),
         reply_button_str="Reply to this notification",
         reply_callback=lambda reply: print(f"Replied {reply=}"),
