@@ -4,4 +4,4 @@ Simple interactable Mac notifications with only pure-python dependencies
 
 from __future__ import annotations
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
