@@ -47,6 +47,7 @@ Installed
 ## Example
 
 ```python
+from functools import partial
 from mac_notifications import client
 
 client.create_notification(
@@ -54,14 +55,14 @@ client.create_notification(
     subtitle="Team Standup",
     icon="/Users/jorrick/zoom.png",
     action_button_str="Join zoom meeting",
-    action_button_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number)
+    action_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number)
 )
 ```
 A simple example. Please look [in the docs](https://jorricks.github.io/macos-notifications/) for more examples like this:
 
 <p align="center">
 <a href="https://jorricks.github.io/macos-notifications/examples/">
-<img src="img/example-run.gif" alt="macos-notifications" width="600px">
+<img src="img/example-run.gif" alt="macos-notifications" width="658">
 </a>
 </p>
 
