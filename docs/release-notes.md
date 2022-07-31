@@ -2,6 +2,9 @@
 
 ## Latest changes
 
+## 0.1.3 - 31 July 2022
+- 📝 Out-dated python example on main page
+
 ## 0.1.2 - 26 July 2022
 - 📝 Documentation update
 - 📝 Remove requirements from docs
