@@ -2,6 +2,9 @@
 
 ## Latest changes
 
+## 0.1.4 - 1st August 2022
+- 🐛 Multiple notifications in the same thread gave exceptions. Now you can send as many notifications as you want.
+
 ## 0.1.3 - 31 July 2022
 - 📝 Out-dated python example on main page
 
