@@ -2,4 +2,4 @@
 
 The class doc explain it all :)
 
-::: mac_notifications.listener_process.NotificationListenerProcess
+::: mac_notifications.listener_process.NotificationProcess

@@ -23,6 +23,14 @@ if __name__ == "__main__":
         reply_button_str="Reply to this notification",
         reply_callback=lambda reply: print(f"You replied: {reply}"),
     )
+    print("Yet another message.")
+    client.create_notification(
+        title="Message from Daniel",
+        subtitle="How you doing?",
+        icon=Path(__file__).parent / "img" / "chat.png",
+        reply_button_str="Reply to this notification",
+        reply_callback=lambda reply: print(f"You replied: {reply}"),
+    )
 
     print("Application will remain active until both notifications have been answered.")
     while client.get_notification_manager().get_active_running_notifications() > 0:

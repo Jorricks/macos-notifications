@@ -9,8 +9,7 @@ from multiprocessing import SimpleQueue
 from threading import Event, Thread
 from typing import Dict, List
 
-from mac_notifications import notification_sender
-from mac_notifications.listener_process import NotificationListenerProcess
+from mac_notifications.listener_process import NotificationProcess
 from mac_notifications.notification_config import NotificationConfig
 from mac_notifications.singleton import Singleton
 
@@ -42,7 +41,7 @@ class NotificationManager(metaclass=Singleton):
         self._callback_queue: SimpleQueue = SimpleQueue()
         self._callback_executor_event: Event = Event()
         self._callback_executor_thread: CallbackExecutorThread | None = None
-        self._callback_listener_process: NotificationListenerProcess | None = None
+        self._callback_listener_process: NotificationProcess | None = None
         # Specify that once we stop our application, self.cleanup should run
         atexit.register(self.cleanup)
         # Specify that when we get a keyboard interrupt, this function should handle it
@@ -65,11 +64,13 @@ class NotificationManager(metaclass=Singleton):
         """
         json_config = notification_config.to_json_notification()
         if not notification_config.contains_callback or self._callback_listener_process is not None:
-            # We can send it directly from this thread.
-            notification_sender.create_notification(json_config, None).send()
+            # We can send it directly and kill the process after as we don't need to listen for callbacks.
+            new_process = NotificationProcess(json_config, None)
+            new_process.start()
+            new_process.join(timeout=5)
         else:
             # We need to also start a listener, so we send the json through a separate process.
-            self._callback_listener_process = NotificationListenerProcess(json_config, self._callback_queue)
+            self._callback_listener_process = NotificationProcess(json_config, self._callback_queue)
             self._callback_listener_process.start()
             self.create_callback_executor_thread()
 
