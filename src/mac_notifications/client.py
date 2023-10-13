@@ -5,7 +5,7 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Callable
 
-from mac_notifications.manager import NotificationManager
+from mac_notifications.manager import Notification, NotificationManager
 from mac_notifications.notification_config import NotificationConfig
 
 """
@@ -36,7 +36,7 @@ def create_notification(
     reply_button_str: str | None = None,
     reply_callback: Callable[[str], None] | None = None,
     snooze_button_str: str | None = None,
-) -> None:
+) -> Notification :
     """
     Create a MacOS notification :)
     :param title: Title of the notification.
@@ -63,4 +63,4 @@ def create_notification(
         reply_callback=reply_callback,
         snooze_button_str=snooze_button_str,
     )
-    get_notification_manager().create_notification(notification_config)
+    return get_notification_manager().create_notification(notification_config)
