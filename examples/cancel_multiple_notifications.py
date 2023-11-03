@@ -8,7 +8,7 @@ from mac_notifications.client import Notification
 if __name__ == "__main__":
     print("Sending meeting notification.")
 
-    sent: [Notification] = [] 
+    sent: list[Notification] = []
 
     def cancel_all():
         for i in sent:

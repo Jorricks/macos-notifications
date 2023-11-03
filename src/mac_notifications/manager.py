@@ -12,7 +12,7 @@ from typing import Dict, List
 from mac_notifications.listener_process import NotificationProcess
 from mac_notifications.notification_config import NotificationConfig
 from mac_notifications.singleton import Singleton
-from .notification_sender import cancel_notification
+from mac_notifications.notification_sender import cancel_notification
 
 """
 This is the module responsible for managing the notifications over time & enabling callbacks to be executed.
@@ -32,10 +32,10 @@ logger = logging.getLogger()
 
 
 class Notification(object):
-    def __init__(self, uid):
+    def __init__(self, uid) -> None:
         self.uid = uid
 
-    def cancel(self):
+    def cancel(self) -> None:
         cancel_notification(self.uid)
         clear_notification_from_existence(self.uid)
 

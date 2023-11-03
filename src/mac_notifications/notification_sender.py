@@ -108,7 +108,7 @@ def create_notification(config: JSONNotificationConfig, queue_to_submit_events_t
     return new_notif
 
 
-def cancel_notification(uid:str):
+def cancel_notification(uid:str) -> None:
     notification = NSUserNotification.alloc().init()
     notification.setIdentifier_(uid)
     NSUserNotificationCenter.defaultUserNotificationCenter().removeDeliveredNotification_(notification)
