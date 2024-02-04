@@ -8,7 +8,7 @@
 
 ???+ "My notifications don't show up with the text I mentioned"
 
-    Unfortunately, you first need to allow Python to create notifications. Instructions on this can be found [here](https://www.jetbrains.com/idea/guide/tips/enable-soft-wrap/#:~:text=You%20can%20enable%20soft%20wrap,more%20file%20types%20by%20default.). Check below for an example
+    Unfortunately, you first need to allow Python to create notifications. Instructions are similar to what can be found [here](https://www.zdnet.com/article/how-to-enable-app-store-notifications-on-macos-to-help-keep-your-software-up-to-date/). The application will be named 'Python'.
 
 
 Your settings should look similar to this:

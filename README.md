@@ -70,4 +70,6 @@ Hence, I figured I should set it up to be as user-friendly as possible and share
 ## Limitations
 Although there are some limitations, there is no reason to not use it now :v:.
 - You need to keep your application running while waiting for the callback to happen.
-- Currently, we are only supporting the old deprecated [user notifications](https://developer.apple.com/documentation/foundation/nsusernotification). Soon we will also make the new implementation available.
+- We do not support raising notifications from anything but the main thread. If you wish to raise it from other threads, you need to set up a communication channel with the main thread, which in turn than raises the notification.
+- Currently, we are only supporting the old deprecated [user notifications](https://developer.apple.com/documentation/foundation/nsusernotification). If you wish to use the new implementation, please feel free to propose an MR.
+- 
