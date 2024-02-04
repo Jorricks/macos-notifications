@@ -72,4 +72,4 @@ Although there are some limitations, there is no reason to not use it now :v:.
 - You need to keep your application running while waiting for the callback to happen.
 - We do not support raising notifications from anything but the main thread. If you wish to raise it from other threads, you need to set up a communication channel with the main thread, which in turn than raises the notification.
 - Currently, we are only supporting the old deprecated [user notifications](https://developer.apple.com/documentation/foundation/nsusernotification). If you wish to use the new implementation, please feel free to propose an MR.
-- 
+- You can not change the main image of the notification to be project specific. You can only change the Python interpreter image, but that would impact all notifications send by Python.  
