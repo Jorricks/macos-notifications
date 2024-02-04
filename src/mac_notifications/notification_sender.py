@@ -16,7 +16,6 @@ logger = logging.getLogger()
 This module is responsible for creating the notifications in the C-layer and listening/reporting about user activity.
 """
 
-
 def create_notification(config: JSONNotificationConfig, queue_to_submit_events_to: SimpleQueue | None) -> Any:
     """
     Create a notification and possibly listed & report about notification activity.
@@ -107,3 +106,9 @@ def create_notification(config: JSONNotificationConfig, queue_to_submit_events_t
 
     # return notification
     return new_notif
+
+
+def cancel_notification(uid:str) -> None:
+    notification = NSUserNotification.alloc().init()
+    notification.setIdentifier_(uid)
+    NSUserNotificationCenter.defaultUserNotificationCenter().removeDeliveredNotification_(notification)

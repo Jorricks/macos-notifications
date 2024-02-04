@@ -12,6 +12,7 @@ from typing import Dict, List
 from mac_notifications.listener_process import NotificationProcess
 from mac_notifications.notification_config import NotificationConfig
 from mac_notifications.singleton import Singleton
+from mac_notifications.notification_sender import cancel_notification
 
 """
 This is the module responsible for managing the notifications over time & enabling callbacks to be executed.
@@ -28,6 +29,15 @@ _FIFO_LIST: List[str] = []
 # Note: _NOTIFICATION_MAP should only contain notifications with a callback!
 _NOTIFICATION_MAP: Dict[str, NotificationConfig] = {}
 logger = logging.getLogger()
+
+
+class Notification(object):
+    def __init__(self, uid) -> None:
+        self.uid = uid
+
+    def cancel(self) -> None:
+        cancel_notification(self.uid)
+        clear_notification_from_existence(self.uid)
 
 
 class NotificationManager(metaclass=Singleton):
@@ -57,7 +67,7 @@ class NotificationManager(metaclass=Singleton):
             self._callback_executor_event.set()
             self._callback_executor_thread.start()
 
-    def create_notification(self, notification_config: NotificationConfig) -> None:
+    def create_notification(self, notification_config: NotificationConfig) -> Notification:
         """
         Create a notification and the corresponding processes if required for a notification with callbacks.
         :param notification_config: The configuration for the notification.
@@ -78,6 +88,7 @@ class NotificationManager(metaclass=Singleton):
             _FIFO_LIST.append(notification_config.uid)
             _NOTIFICATION_MAP[notification_config.uid] = notification_config
         self.clear_old_notifications()
+        return Notification(notification_config.uid)
 
     @staticmethod
     def clear_old_notifications() -> None:
