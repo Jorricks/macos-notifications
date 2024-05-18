@@ -78,6 +78,12 @@ class NotificationManager(metaclass=Singleton):
 
         if MACOS_NOTIFICATIONS_AS_DAEMON:
             create_notification(json_config, None)
+            # with objc.autorelease_pool():
+            #     notification = create_notification(json_config, None)
+            #     notification_cls = type(notification)
+            #     print(f"notification_cls: {notification_cls} ({notification_cls.__name__})")
+            #     del(notification)
+            #     del(notification_cls)
         elif not notification_config.contains_callback or self._callback_listener_process is not None:
             # We can send it directly and kill the process after as we don't need to listen for callbacks.
             new_process = NotificationProcess(json_config, None)
