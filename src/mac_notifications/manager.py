@@ -77,7 +77,7 @@ class NotificationManager(metaclass=Singleton):
         json_config = notification_config.to_json_notification()
 
         if MACOS_NOTIFICATIONS_AS_DAEMON:
-            create_notification(json_config, None).send()
+            create_notification(json_config, None)
         elif not notification_config.contains_callback or self._callback_listener_process is not None:
             # We can send it directly and kill the process after as we don't need to listen for callbacks.
             new_process = NotificationProcess(json_config, None)

@@ -4,6 +4,7 @@ import logging
 from multiprocessing import SimpleQueue
 from typing import Any
 
+from objc import python_method
 from AppKit import NSImage
 from Foundation import NSDate, NSObject, NSURL, NSUserNotification, NSUserNotificationCenter
 from PyObjCTools import AppHelper
@@ -24,66 +25,75 @@ def create_notification(config: JSONNotificationConfig, queue_to_submit_events_t
     is passed, it will start the event listener after it created the Notifications. If this is None, it will only
     create the notification.
     """
+    notification = _build_notification(config)
+    macos_notification = MacOSNotification.alloc().init()
+    macos_notification.send(notification, config, queue_to_submit_events_to)
+    return macos_notification
 
 
-    class MacOSNotification(NSObject):
-        def send(self):
-            """Sending of the notification"""
-            notification = _build_notification(config)
-            NSUserNotificationCenter.defaultUserNotificationCenter().setDelegate_(self)
+class MacOSNotification(NSObject):
+    @python_method
+    def send(
+            self,
+            notification: NSUserNotification,
+            config: JSONNotificationConfig,
+            queue_to_submit_events_to: SimpleQueue | None
+        ):
+        """Sending of the notification"""
+        self.queue_to_submit_events_to = queue_to_submit_events_to
+        NSUserNotificationCenter.defaultUserNotificationCenter().setDelegate_(self)
 
-            # Setting delivery date as current date + delay (in seconds)
-            notification.setDeliveryDate_(
-                NSDate.dateWithTimeInterval_sinceDate_(config.delay_in_seconds, NSDate.date())
-            )
+        # Setting delivery date as current date + delay (in seconds)
+        notification.setDeliveryDate_(
+            NSDate.dateWithTimeInterval_sinceDate_(config.delay_in_seconds, NSDate.date())
+        )
 
-            # Schedule the notification send
-            NSUserNotificationCenter.defaultUserNotificationCenter().scheduleNotification_(notification)
+        # Schedule the notification send
+        NSUserNotificationCenter.defaultUserNotificationCenter().scheduleNotification_(notification)
 
-            # Wait for the notification CallBack to happen.
-            if queue_to_submit_events_to:
-                logger.debug("Started listening for user interactions with notifications.")
-                AppHelper.runConsoleEventLoop()
+        # Wait for the notification CallBack to happen.
+        if queue_to_submit_events_to:
+            logger.debug("Started listening for user interactions with notifications.")
+            AppHelper.runConsoleEventLoop()
 
-            return self
+        return self
 
-        def userNotificationCenter_didDeliverNotification_(
-            self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore  # noqa
-        ) -> None:
-            """Respond to the delivering of the notification."""
-            logger.debug(f"Delivered: {notif.identifier()}")
+    def userNotificationCenter_didDeliverNotification_(
+            self,
+            center: "_NSConcreteUserNotificationCenter",
+            notif: "_NSConcreteUserNotification"
+    ) -> None:
+        """Respond to the delivering of the notification."""
+        logger.debug(f"Delivered: {notif.identifier()}")
 
-        def userNotificationCenter_didActivateNotification_(
-            self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore  # noqa
-        ) -> None:
-            """
-            Respond to a user interaction with the notification.
-            """
-            identifier = notif.identifier()
-            response = notif.response()
-            activation_type = notif.activationType()
+    def userNotificationCenter_didActivateNotification_(
+            self,
+            center: "_NSConcreteUserNotificationCenter",
+            notif: "_NSConcreteUserNotification"  # type: ignore  # noqa
+    ) -> None:
+        """
+        Respond to a user interaction with the notification.
+        """
+        identifier = notif.identifier()
+        response = notif.response()
+        activation_type = notif.activationType()
 
-            if queue_to_submit_events_to is None:
-                raise ValueError("Queue should not be None here.")
-            else:
-                queue: SimpleQueue = queue_to_submit_events_to
+        if self.queue_to_submit_events_to is None:
+            raise ValueError("Queue should not be None here.")
+        else:
+            queue: SimpleQueue = self.queue_to_submit_events_to
 
-            logger.debug(f"User interacted with {identifier} with activationType {activation_type}.")
-            if activation_type == 1:
-                # user clicked on the notification (not on a button)
-                pass
+        logger.debug(f"User interacted with {identifier} with activationType {activation_type}.")
+        if activation_type == 1:
+            # user clicked on the notification (not on a button)
+            pass
 
-            elif activation_type == 2:  # user clicked on the action button
-                queue.put((identifier, "action_button_clicked", ""))
+        elif activation_type == 2:  # user clicked on the action button
+            queue.put((identifier, "action_button_clicked", ""))
 
-            elif activation_type == 3:  # User clicked on the reply button
-                queue.put((identifier, "reply_button_clicked", response.string()))
+        elif activation_type == 3:  # User clicked on the reply button
+            queue.put((identifier, "reply_button_clicked", response.string()))
 
-    # create the new notification
-    new_notif = MacOSNotification.alloc().init()
-
-    # return notification
-    return new_notif
 
 
 def cancel_notification(uid:str) -> None:
@@ -123,3 +133,26 @@ def _build_notification(config: JSONNotificationConfig) -> NSUserNotification:
             notification.setResponsePlaceholder_(config.reply_button_str)
 
     return notification
+
+
+def dispose_of_objc_class(cls_name: str):
+    import objc, ctypes, re
+    NSObject = objc.lookUpClass("NSObject")
+
+    class Foo(NSObject):
+        pass
+
+    addr = int(re.search("0x[0-9a-f]+", repr(Foo)).group(0), 16)
+
+    del Foo
+
+    print ("Foo addr:", hex(addr))
+    print ("Foo class:", objc.lookUpClass("Foo"))
+
+
+    ctypes.pythonapi.objc_disposeClassPair.restype = None
+    ctypes.pythonapi.objc_disposeClassPair.argtypes = (ctypes.c_void_p,)
+
+    ctypes.pythonapi.objc_disposeClassPair(addr)
+
+    print ("Foo class:", objc.lookUpClass("Foo"))

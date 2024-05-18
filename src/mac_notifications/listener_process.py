@@ -25,5 +25,5 @@ class NotificationProcess(Process):
         self.queue = queue
 
     def run(self) -> None:
-        notification_sender.create_notification(self.notification_config, self.queue).send()
+        notification_sender.create_notification(self.notification_config, self.queue)
         # on if any of the callbacks are provided, start the event loop (this will keep the program from stopping)
