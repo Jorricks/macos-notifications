@@ -12,7 +12,7 @@ from typing import Dict, List
 from mac_notifications.listener_process import NotificationProcess
 from mac_notifications.notification_config import MACOS_NOTIFICATIONS_AS_DAEMON, NotificationConfig
 from mac_notifications.singleton import Singleton
-from mac_notifications.notification_sender import cancel_notification
+from mac_notifications.notification_sender import cancel_notification, create_notification
 
 
 """
@@ -77,7 +77,7 @@ class NotificationManager(metaclass=Singleton):
         json_config = notification_config.to_json_notification()
 
         if MACOS_NOTIFICATIONS_AS_DAEMON:
-            notification_sender.create_notification(json_config, None).send()
+            create_notification(json_config, None).send()
         elif not notification_config.contains_callback or self._callback_listener_process is not None:
             # We can send it directly and kill the process after as we don't need to listen for callbacks.
             new_process = NotificationProcess(json_config, None)
