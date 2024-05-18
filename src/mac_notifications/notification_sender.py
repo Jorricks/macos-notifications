@@ -25,37 +25,11 @@ def create_notification(config: JSONNotificationConfig, queue_to_submit_events_t
     create the notification.
     """
 
+
     class MacOSNotification(NSObject):
         def send(self):
             """Sending of the notification"""
-            notification = NSUserNotification.alloc().init()
-            notification.setIdentifier_(config.uid)
-            if config is not None:
-                notification.setTitle_(config.title)
-            if config.subtitle is not None:
-                notification.setSubtitle_(config.subtitle)
-            if config.text is not None:
-                notification.setInformativeText_(config.text)
-            if config.sound is not None:
-                notification.setSoundName_(config.sound)
-            if config.icon is not None:
-                url = NSURL.alloc().initWithString_(f"file://{config.icon}")
-                image = NSImage.alloc().initWithContentsOfURL_(url)
-                notification.setContentImage_(image)
-
-            # Notification buttons (main action button and other button)
-            if config.action_button_str:
-                notification.setActionButtonTitle_(config.action_button_str)
-                notification.setHasActionButton_(True)
-
-            if config.snooze_button_str:
-                notification.setOtherButtonTitle_(config.snooze_button_str)
-
-            if config.reply_callback_present:
-                notification.setHasReplyButton_(True)
-                if config.reply_button_str:
-                    notification.setResponsePlaceholder_(config.reply_button_str)
-
+            notification = _build_notification(config)
             NSUserNotificationCenter.defaultUserNotificationCenter().setDelegate_(self)
 
             # Setting delivery date as current date + delay (in seconds)
@@ -70,6 +44,8 @@ def create_notification(config: JSONNotificationConfig, queue_to_submit_events_t
             if queue_to_submit_events_to:
                 logger.debug("Started listening for user interactions with notifications.")
                 AppHelper.runConsoleEventLoop()
+
+            return self
 
         def userNotificationCenter_didDeliverNotification_(
             self, center: "_NSConcreteUserNotificationCenter", notif: "_NSConcreteUserNotification"  # type: ignore  # noqa
@@ -114,3 +90,36 @@ def cancel_notification(uid:str) -> None:
     notification = NSUserNotification.alloc().init()
     notification.setIdentifier_(uid)
     NSUserNotificationCenter.defaultUserNotificationCenter().removeDeliveredNotification_(notification)
+
+
+
+def _build_notification(config: JSONNotificationConfig) -> NSUserNotification:
+    notification = NSUserNotification.alloc().init()
+    notification.setIdentifier_(config.uid)
+    if config is not None:
+        notification.setTitle_(config.title)
+    if config.subtitle is not None:
+        notification.setSubtitle_(config.subtitle)
+    if config.text is not None:
+        notification.setInformativeText_(config.text)
+    if config.sound is not None:
+        notification.setSoundName_(config.sound)
+    if config.icon is not None:
+        url = NSURL.alloc().initWithString_(f"file://{config.icon}")
+        image = NSImage.alloc().initWithContentsOfURL_(url)
+        notification.setContentImage_(image)
+
+    # Notification buttons (main action button and other button)
+    if config.action_button_str:
+        notification.setActionButtonTitle_(config.action_button_str)
+        notification.setHasActionButton_(True)
+
+    if config.snooze_button_str:
+        notification.setOtherButtonTitle_(config.snooze_button_str)
+
+    if config.reply_callback_present:
+        notification.setHasReplyButton_(True)
+        if config.reply_button_str:
+            notification.setResponsePlaceholder_(config.reply_button_str)
+
+    return notification
