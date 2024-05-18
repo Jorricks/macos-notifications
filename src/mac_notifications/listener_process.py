@@ -11,10 +11,7 @@ class NotificationProcess(Process):
     This is a simple process to launch a notification in a separate process.
 
     Why you may ask?
-    First, the way we need to launch a notification using a class, this class can only be instantiated once in a
-    process. Hence, for simple notifications we create a new process and then immediately stop it after the notification
-    was launched.
-    Second, waiting for the user interaction with a notification is a blocking operation.
+    Waiting for the user interaction with a notification is a blocking operation.
     Because it is a blocking operation, if we want to be able to receive any user interaction from the notification,
     without completely halting/freezing our main process, we need to open it in a background process.
     """

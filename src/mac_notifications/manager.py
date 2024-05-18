@@ -49,6 +49,7 @@ class NotificationManager(metaclass=Singleton):
     """
 
     def __init__(self):
+        self._callback_queue: SimpleQueue | None = None
         self._callback_executor_event: Event = Event()
         self._callback_executor_thread: CallbackExecutorThread | None = None
         self._callback_listener_process: NotificationProcess | None = None
@@ -77,7 +78,7 @@ class NotificationManager(metaclass=Singleton):
 
         if notification_config.contains_callback:
             # We need to also start a listener, so we send the json through a separate process.
-            self._callback_queue = SimpleQueue()
+            self._callback_queue = self._callback_queue or SimpleQueue()
             self._callback_listener_process = NotificationProcess(json_config, self._callback_queue)
             self._callback_listener_process.start()
             self.create_callback_executor_thread()
