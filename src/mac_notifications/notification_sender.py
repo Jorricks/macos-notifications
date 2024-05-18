@@ -37,7 +37,7 @@ def create_notification(config: JSONNotificationConfig, queue_to_submit_events_t
             if config.text is not None:
                 notification.setInformativeText_(config.text)
             if config.sound is not None:
-                notification.setSound_(config.sound)
+                notification.setSoundName_(config.sound)
             if config.icon is not None:
                 url = NSURL.alloc().initWithString_(f"file://{config.icon}")
                 image = NSImage.alloc().initWithContentsOfURL_(url)
