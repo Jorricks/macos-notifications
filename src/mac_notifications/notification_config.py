@@ -10,12 +10,6 @@ from typing import Callable
 The dataclasses that represent a Notification configuration.
 """
 
-# Some kinds of Python multiprocessing do not play nice with code that runs
-# continuously - servers, LaunchAgents, etc. By setting this environment
-# variable to True you can bypass the problematic parts and thus send
-# notifications from a daemon process.
-MACOS_NOTIFICATIONS_AS_DAEMON = getenv('MACOS_NOTIFICATIONS_AS_DAEMON', False)
-
 
 @dataclass
 class NotificationConfig:

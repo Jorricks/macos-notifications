@@ -10,7 +10,7 @@ from threading import Event, Thread
 from typing import Dict, List
 
 from mac_notifications.listener_process import NotificationProcess
-from mac_notifications.notification_config import MACOS_NOTIFICATIONS_AS_DAEMON, NotificationConfig
+from mac_notifications.notification_config import NotificationConfig
 from mac_notifications.singleton import Singleton
 from mac_notifications.notification_sender import cancel_notification, create_notification
 
@@ -56,7 +56,6 @@ class NotificationManager(metaclass=Singleton):
         atexit.register(self.cleanup)
 
         # Specify that when we get a keyboard interrupt, this function should handle it
-        #if not MACOS_NOTIFICATIONS_AS_DAEMON:
         signal.signal(signal.SIGINT, handler=self.catch_keyboard_interrupt)
 
     def create_callback_executor_thread(self) -> None:

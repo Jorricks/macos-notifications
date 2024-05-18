@@ -36,7 +36,7 @@ def create_notification(
     action_callback: Callable[[], None] | None = None,
     reply_button_str: str | None = None,
     reply_callback: Callable[[str], None] | None = None,
-    snooze_button_str: str | None = None
+    snooze_button_str: str | None = None,
 ) -> Notification :
     """
     Create a MacOS notification :)
@@ -63,6 +63,6 @@ def create_notification(
         action_callback=action_callback,
         reply_button_str=reply_button_str,
         reply_callback=reply_callback,
-        snooze_button_str=snooze_button_str
+        snooze_button_str=snooze_button_str,
     )
     return get_notification_manager().create_notification(notification_config)
