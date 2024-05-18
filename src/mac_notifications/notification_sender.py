@@ -9,9 +9,9 @@ from multiprocessing import SimpleQueue
 from typing import Any, Type
 
 import ctypes
-from objc import python_method
 from AppKit import NSImage
 from Foundation import NSDate, NSObject, NSURL, NSUserNotification, NSUserNotificationCenter
+from objc import python_method
 from PyObjCTools import AppHelper
 
 from mac_notifications.notification_config import JSONNotificationConfig
