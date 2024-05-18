@@ -9,10 +9,11 @@ from multiprocessing import SimpleQueue
 from threading import Event, Thread
 from typing import Dict, List
 
+from mac_notifications import notification_sender
 from mac_notifications.listener_process import NotificationProcess
-from mac_notifications.notification_config import NotificationConfig
+from mac_notifications.notification_config import MACOS_NOTIFICATIONS_AS_DAEMON, NotificationConfig
 from mac_notifications.singleton import Singleton
-from mac_notifications.notification_sender import cancel_notification
+
 
 """
 This is the module responsible for managing the notifications over time & enabling callbacks to be executed.
@@ -36,7 +37,7 @@ class Notification(object):
         self.uid = uid
 
     def cancel(self) -> None:
-        cancel_notification(self.uid)
+        notification_sender.cancel_notification(self.uid)
         clear_notification_from_existence(self.uid)
 
 
@@ -48,7 +49,6 @@ class NotificationManager(metaclass=Singleton):
     """
 
     def __init__(self):
-        self._callback_queue: SimpleQueue = SimpleQueue()
         self._callback_executor_event: Event = Event()
         self._callback_executor_thread: CallbackExecutorThread | None = None
         self._callback_listener_process: NotificationProcess | None = None
@@ -73,13 +73,17 @@ class NotificationManager(metaclass=Singleton):
         :param notification_config: The configuration for the notification.
         """
         json_config = notification_config.to_json_notification()
-        if not notification_config.contains_callback or self._callback_listener_process is not None:
+
+        if MACOS_NOTIFICATIONS_AS_DAEMON:
+            notification_sender.create_notification(json_config, None).send()
+        elif not notification_config.contains_callback or self._callback_listener_process is not None:
             # We can send it directly and kill the process after as we don't need to listen for callbacks.
             new_process = NotificationProcess(json_config, None)
             new_process.start()
             new_process.join(timeout=5)
         else:
             # We need to also start a listener, so we send the json through a separate process.
+            self._callback_queue = SimpleQueue()
             self._callback_listener_process = NotificationProcess(json_config, self._callback_queue)
             self._callback_listener_process.start()
             self.create_callback_executor_thread()

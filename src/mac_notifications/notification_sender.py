@@ -8,7 +8,7 @@ from AppKit import NSImage
 from Foundation import NSDate, NSObject, NSURL, NSUserNotification, NSUserNotificationCenter
 from PyObjCTools import AppHelper
 
-from mac_notifications.notification_config import JSONNotificationConfig
+from mac_notifications.notification_config import MACOS_NOTIFICATIONS_AS_DAEMON, JSONNotificationConfig
 
 logger = logging.getLogger()
 
