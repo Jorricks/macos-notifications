@@ -56,8 +56,8 @@ class NotificationManager(metaclass=Singleton):
         atexit.register(self.cleanup)
 
         # Specify that when we get a keyboard interrupt, this function should handle it
-        if not MACOS_NOTIFICATIONS_AS_DAEMON:
-            signal.signal(signal.SIGINT, handler=self.catch_keyboard_interrupt)
+        #if not MACOS_NOTIFICATIONS_AS_DAEMON:
+        signal.signal(signal.SIGINT, handler=self.catch_keyboard_interrupt)
 
     def create_callback_executor_thread(self) -> None:
         """Creates the callback executor thread and sets the _callback_executor_event."""
@@ -74,25 +74,19 @@ class NotificationManager(metaclass=Singleton):
         Create a notification and the corresponding processes if required for a notification with callbacks.
         :param notification_config: The configuration for the notification.
         """
-        if notification_config.contains_callback and not notification_config.allow_multiprocessing:
-            raise ValueError(f"Multiprocessing is required to listen for notification responses.")
-
         json_config = notification_config.to_json_notification()
 
-        if not notification_config.allow_multiprocessing:
-            create_notification(json_config, None)
-        if not notification_config.contains_callback or self._callback_listener_process is not None:
-            create_notification(json_config, None)
-        else:
+        if notification_config.contains_callback:
             # We need to also start a listener, so we send the json through a separate process.
             self._callback_queue = SimpleQueue()
             self._callback_listener_process = NotificationProcess(json_config, self._callback_queue)
             self._callback_listener_process.start()
             self.create_callback_executor_thread()
-
-        if notification_config.contains_callback:
             _FIFO_LIST.append(notification_config.uid)
             _NOTIFICATION_MAP[notification_config.uid] = notification_config
+        else:
+            create_notification(json_config, None)
+
         self.clear_old_notifications()
         return Notification(notification_config.uid)
 
@@ -114,7 +108,7 @@ class NotificationManager(metaclass=Singleton):
     def catch_keyboard_interrupt(self, *args) -> None:
         """We catch the keyboard interrupt but also pass it onto the user program."""
         self.cleanup()
-        sys.exit(signal.SIGINT)
+        signal.raise_signal(signal.SIGINT)
 
     def cleanup(self) -> None:
         """Stop all processes related to the Notification callback handling."""
@@ -131,7 +125,7 @@ class NotificationManager(metaclass=Singleton):
 
 class CallbackExecutorThread(Thread):
     """
-    Background threat that checks each 0.1 second whether there are any callbacks that it should execute.
+    Background thread that checks each 0.1 second whether there are any callbacks that it should execute.
     """
 
     def __init__(self, keep_running: Event, callback_queue: SimpleQueue):
