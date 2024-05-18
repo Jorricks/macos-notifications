@@ -57,8 +57,6 @@ class MacOSNotification(NSObject):
             logger.debug("Started listening for user interactions with notifications.")
             AppHelper.runConsoleEventLoop()
 
-        return self
-
     def userNotificationCenter_didDeliverNotification_(
             self,
             center: "_NSConcreteUserNotificationCenter",
