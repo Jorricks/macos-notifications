@@ -49,6 +49,7 @@ if __name__ == "__main__":
         title="Meeting starts now!",
         subtitle="Team Standup",
         icon="/Users/jorrick/zoom.png",
+        sound="Frog",
         action_button_str="Join zoom meeting",
         action_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number)
     )
@@ -63,7 +64,7 @@ A simple example. Please look [in the docs](https://jorricks.github.io/macos-not
 
 ##  Why did you create this library?
 I wanted a library that did not depend on any non-python tools (so you had to go around and install that). Instead, I wanted a library where you install the pip packages, and you are done.
-Later I realised how hard it was to integrate correctly with PyOBJC. Also, I had a hard time finding any examples on how to easily integrate this in a non-blocking fashion with my tool. 
+Later I realised how hard it was to integrate correctly with PyOBJC. Also, I had a hard time finding any examples on how to easily integrate this in a non-blocking fashion with my tool.
 Hence, I figured I should set it up to be as user-friendly as possible and share it with the world ;)!
 
 
@@ -72,4 +73,4 @@ Although there are some limitations, there is no reason to not use it now :v:.
 - You need to keep your application running while waiting for the callback to happen.
 - We do not support raising notifications from anything but the main thread. If you wish to raise it from other threads, you need to set up a communication channel with the main thread, which in turn than raises the notification.
 - Currently, we are only supporting the old deprecated [user notifications](https://developer.apple.com/documentation/foundation/nsusernotification). If you wish to use the new implementation, please feel free to propose an MR.
-- You can not change the main image of the notification to be project specific. You can only change the Python interpreter image, but that would impact all notifications send by Python.  
+- You can not change the main image of the notification to be project specific. You can only change the Python interpreter image, but that would impact all notifications send by Python.
