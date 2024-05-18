@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import logging
+import re
 from multiprocessing import SimpleQueue
-from typing import Any
+from typing import Any, Type
 
+import ctypes
 from objc import python_method
 from AppKit import NSImage
 from Foundation import NSDate, NSObject, NSURL, NSUserNotification, NSUserNotificationCenter
@@ -135,24 +137,12 @@ def _build_notification(config: JSONNotificationConfig) -> NSUserNotification:
     return notification
 
 
-def dispose_of_objc_class(cls_name: str):
-    import objc, ctypes, re
-    NSObject = objc.lookUpClass("NSObject")
-
-    class Foo(NSObject):
-        pass
-
-    addr = int(re.search("0x[0-9a-f]+", repr(Foo)).group(0), 16)
-
-    del Foo
-
-    print ("Foo addr:", hex(addr))
-    print ("Foo class:", objc.lookUpClass("Foo"))
-
-
+# Hardcore way to dealloc an Objective-C class from https://github.com/albertz/chromehacking/blob/master/disposeClass.py
+def dispose_of_objc_class(cls: Type):
+    """Deallocate an objective C class (del cls does not remove the class from memory)."""
+    address = int(re.search("0x[0-9a-f]+", repr(cls)).group(0), 16)
+    logger.info(f"Disposing of class '{cls.__name__}' at addr: {hex(address)}")
+    print(f"Disposing of class '{cls.__name__}' at addr: {hex(address)}")
     ctypes.pythonapi.objc_disposeClassPair.restype = None
     ctypes.pythonapi.objc_disposeClassPair.argtypes = (ctypes.c_void_p,)
-
-    ctypes.pythonapi.objc_disposeClassPair(addr)
-
-    print ("Foo class:", objc.lookUpClass("Foo"))
+    ctypes.pythonapi.objc_disposeClassPair(address)
