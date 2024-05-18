@@ -37,6 +37,7 @@ def create_notification(
     reply_button_str: str | None = None,
     reply_callback: Callable[[str], None] | None = None,
     snooze_button_str: str | None = None,
+    allow_multiprocessing: bool = True,
 ) -> Notification :
     """
     Create a MacOS notification :)
@@ -51,6 +52,8 @@ def create_notification(
     :param reply_callback: The function to call with the replied text.
     :param snooze_button_str: This is a useless button that closes the notification (but not the process). Think of
     this as a snooze button.
+    :param allow_multiprocessing: If true then a process will be forked to handle sending the notification
+    (and listening for a resopnse).
     """
     notification_config = NotificationConfig(
         title=title,
@@ -64,5 +67,6 @@ def create_notification(
         reply_button_str=reply_button_str,
         reply_callback=reply_callback,
         snooze_button_str=snooze_button_str,
+        allow_multiprocessing=allow_multiprocessing
     )
     return get_notification_manager().create_notification(notification_config)

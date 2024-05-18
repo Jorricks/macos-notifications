@@ -27,13 +27,14 @@ class NotificationConfig:
     subtitle: str | None
     text: str | None
     icon: str | None
+    sound: str | None
     delay: timedelta
     action_button_str: str | None
     action_callback: Callable[[], None] | None
     reply_button_str: str | None
     reply_callback: Callable[[str], None] | None
     snooze_button_str: str | None
-    sound: str | None
+    allow_multiprocessing: bool = True
     uid: str = field(default_factory=lambda: uuid.uuid4().hex)
 
     @property
@@ -57,6 +58,7 @@ class NotificationConfig:
             reply_button_str=NotificationConfig.c_compliant(self.reply_button_str),
             reply_callback_present=bool(self.reply_callback),
             snooze_button_str=NotificationConfig.c_compliant(self.snooze_button_str),
+            allow_multiprocessing=self.allow_multiprocessing,
             uid=self.uid,
         )
 
@@ -86,6 +88,7 @@ class JSONNotificationConfig:
     reply_button_str: str | None
     reply_callback_present: bool
     snooze_button_str: str | None
+    allow_multiprocessing: bool
     uid: str
 
     @property

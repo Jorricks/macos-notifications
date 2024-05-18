@@ -74,15 +74,15 @@ class NotificationManager(metaclass=Singleton):
         Create a notification and the corresponding processes if required for a notification with callbacks.
         :param notification_config: The configuration for the notification.
         """
+        if notification_config.contains_callback and not notification_config.allow_multiprocessing:
+            raise ValueError(f"Multiprocessing is required to listen for notification responses.")
+
         json_config = notification_config.to_json_notification()
 
-        if MACOS_NOTIFICATIONS_AS_DAEMON:
+        if not notification_config.allow_multiprocessing:
             create_notification(json_config, None)
-        elif not notification_config.contains_callback or self._callback_listener_process is not None:
-            # We can send it directly and kill the process after as we don't need to listen for callbacks.
-            new_process = NotificationProcess(json_config, None)
-            new_process.start()
-            new_process.join(timeout=5)
+        if not notification_config.contains_callback or self._callback_listener_process is not None:
+            create_notification(json_config, None)
         else:
             # We need to also start a listener, so we send the json through a separate process.
             self._callback_queue = SimpleQueue()
