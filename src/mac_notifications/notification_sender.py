@@ -19,7 +19,7 @@ logger = logging.getLogger()
 This module is responsible for creating the notifications in the C-layer and listening/reporting about user activity.
 """
 
-def create_notification(config: JSONNotificationConfig, queue_to_submit_events_to: SimpleQueue | None) -> Any:
+def create_notification(config: JSONNotificationConfig, queue_to_submit_events_to: SimpleQueue | None) -> None:
     """
     Create a notification and possibly listed & report about notification activity.
     :param config: The configuration of the notification to send.
@@ -30,7 +30,6 @@ def create_notification(config: JSONNotificationConfig, queue_to_submit_events_t
     notification = _build_notification(config)
     macos_notification = MacOSNotification.alloc().init()
     macos_notification.send(notification, config, queue_to_submit_events_to)
-    return macos_notification
 
 
 class MacOSNotification(NSObject):
@@ -97,12 +96,10 @@ class MacOSNotification(NSObject):
             queue.put((identifier, "reply_button_clicked", response.string()))
 
 
-
 def cancel_notification(uid:str) -> None:
     notification = NSUserNotification.alloc().init()
     notification.setIdentifier_(uid)
     NSUserNotificationCenter.defaultUserNotificationCenter().removeDeliveredNotification_(notification)
-
 
 
 def _build_notification(config: JSONNotificationConfig) -> NSUserNotification:
