@@ -9,10 +9,10 @@ from multiprocessing import SimpleQueue
 from threading import Event, Thread
 from typing import Dict, List
 
-from mac_notifications import notification_sender
 from mac_notifications.listener_process import NotificationProcess
 from mac_notifications.notification_config import MACOS_NOTIFICATIONS_AS_DAEMON, NotificationConfig
 from mac_notifications.singleton import Singleton
+from mac_notifications.notification_sender import cancel_notification
 
 
 """
@@ -37,7 +37,7 @@ class Notification(object):
         self.uid = uid
 
     def cancel(self) -> None:
-        notification_sender.cancel_notification(self.uid)
+        cancel_notification(self.uid)
         clear_notification_from_existence(self.uid)
 
 
