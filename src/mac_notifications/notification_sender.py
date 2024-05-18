@@ -134,7 +134,7 @@ def _build_notification(config: JSONNotificationConfig) -> NSUserNotification:
 
 # Hardcore way to dealloc an Objective-C class from https://github.com/albertz/chromehacking/blob/master/disposeClass.py
 def dispose_of_objc_class(cls: Type):
-    """Deallocate an objective C class (del cls does not remove the class from memory)."""
+    """Deallocate an objective C class ('del cls' does not remove the class from memory)."""
     address = int(re.search("0x[0-9a-f]+", repr(cls)).group(0), 16)
     logger.info(f"Disposing of class '{cls.__name__}' at addr: {hex(address)}")
     print(f"Disposing of class '{cls.__name__}' at addr: {hex(address)}")
