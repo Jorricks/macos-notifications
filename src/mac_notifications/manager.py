@@ -57,6 +57,7 @@ class NotificationManager(metaclass=Singleton):
         atexit.register(self.cleanup)
 
         # Specify that when we get a keyboard interrupt, this function should handle it
+        self.original_sigint_handler = signal.getsignal(signal.SIGINT)
         signal.signal(signal.SIGINT, handler=self.catch_keyboard_interrupt)
 
     def create_callback_executor_thread(self) -> None:
@@ -108,6 +109,7 @@ class NotificationManager(metaclass=Singleton):
     def catch_keyboard_interrupt(self, *args) -> None:
         """We catch the keyboard interrupt but also pass it onto the user program."""
         self.cleanup()
+        signal.signal(signal.SIGINT, handler=self.original_sigint_handler)
         signal.raise_signal(signal.SIGINT)
 
     def cleanup(self) -> None:
