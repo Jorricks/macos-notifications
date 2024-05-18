@@ -54,8 +54,10 @@ class NotificationManager(metaclass=Singleton):
         self._callback_listener_process: NotificationProcess | None = None
         # Specify that once we stop our application, self.cleanup should run
         atexit.register(self.cleanup)
+
         # Specify that when we get a keyboard interrupt, this function should handle it
-        signal.signal(signal.SIGINT, handler=self.catch_keyboard_interrupt)
+        if not MACOS_NOTIFICATIONS_AS_DAEMON:
+            signal.signal(signal.SIGINT, handler=self.catch_keyboard_interrupt)
 
     def create_callback_executor_thread(self) -> None:
         """Creates the callback executor thread and sets the _callback_executor_event."""
