@@ -1,3 +1,6 @@
+"""
+This module is responsible for creating the notifications in the C-layer and listening/reporting about user activity.
+"""
 from __future__ import annotations
 
 import logging
@@ -15,13 +18,10 @@ from mac_notifications.notification_config import JSONNotificationConfig
 
 logger = logging.getLogger()
 
-"""
-This module is responsible for creating the notifications in the C-layer and listening/reporting about user activity.
-"""
 
 def create_notification(config: JSONNotificationConfig, queue_to_submit_events_to: SimpleQueue | None) -> None:
     """
-    Create a notification and possibly listed & report about notification activity.
+    Create a notification and possibly listen & report about notification activity.
     :param config: The configuration of the notification to send.
     :param queue_to_submit_events_to: The Queue to submit user activity related to the callbacks to. If this argument
     is passed, it will start the event listener after it created the Notifications. If this is None, it will only
