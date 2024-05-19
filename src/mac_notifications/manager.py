@@ -9,10 +9,9 @@ from multiprocessing import SimpleQueue
 from threading import Event, Thread
 from typing import Dict, List
 
-from mac_notifications.listener_process import NotificationProcess
 from mac_notifications.notification_config import NotificationConfig
-from mac_notifications.singleton import Singleton
 from mac_notifications.notification_sender import cancel_notification, create_notification
+from mac_notifications.singleton import Singleton
 
 
 """
@@ -52,7 +51,6 @@ class NotificationManager(metaclass=Singleton):
         self._callback_queue: SimpleQueue | None = None
         self._callback_executor_event: Event = Event()
         self._callback_executor_thread: CallbackExecutorThread | None = None
-        self._callback_listener_process: NotificationProcess | None = None
         # Specify that once we stop our application, self.cleanup should run
         atexit.register(self.cleanup)
 
@@ -80,14 +78,11 @@ class NotificationManager(metaclass=Singleton):
         if notification_config.contains_callback:
             # We need to also start a listener, so we send the json through a separate process.
             self._callback_queue = self._callback_queue or SimpleQueue()
-            self._callback_listener_process = NotificationProcess(json_config, self._callback_queue)
-            self._callback_listener_process.start()
             self.create_callback_executor_thread()
             _FIFO_LIST.append(notification_config.uid)
             _NOTIFICATION_MAP[notification_config.uid] = notification_config
-        else:
-            create_notification(json_config, None)
 
+        create_notification(json_config, None)
         self.clear_old_notifications()
         return Notification(notification_config.uid)
 
@@ -117,10 +112,7 @@ class NotificationManager(metaclass=Singleton):
         if self._callback_executor_thread:
             self._callback_executor_event.clear()
             self._callback_executor_thread.join()
-        if self._callback_listener_process:
-            self._callback_listener_process.kill()
         self._callback_executor_thread = None
-        self._callback_listener_process = None
         _NOTIFICATION_MAP.clear()
         _FIFO_LIST.clear()
 
