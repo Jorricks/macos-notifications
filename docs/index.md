@@ -55,6 +55,7 @@ if __name__ == "__main__":
         title="Meeting starts now!",
         subtitle="Team Standup",
         icon="/Users/jorrick/zoom.png",
+        sound="Frog",
         action_button_str="Join zoom meeting",
         action_callback=partial(join_zoom_meeting, conf_number=zoom_conf_number)
     )

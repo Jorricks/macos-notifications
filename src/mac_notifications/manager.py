@@ -9,10 +9,10 @@ from multiprocessing import SimpleQueue
 from threading import Event, Thread
 from typing import Dict, List
 
-from mac_notifications.listener_process import NotificationProcess
 from mac_notifications.notification_config import NotificationConfig
+from mac_notifications.notification_sender import cancel_notification, create_notification
 from mac_notifications.singleton import Singleton
-from mac_notifications.notification_sender import cancel_notification
+
 
 """
 This is the module responsible for managing the notifications over time & enabling callbacks to be executed.
@@ -48,13 +48,14 @@ class NotificationManager(metaclass=Singleton):
     """
 
     def __init__(self):
-        self._callback_queue: SimpleQueue = SimpleQueue()
+        self._callback_queue: SimpleQueue | None = None
         self._callback_executor_event: Event = Event()
         self._callback_executor_thread: CallbackExecutorThread | None = None
-        self._callback_listener_process: NotificationProcess | None = None
         # Specify that once we stop our application, self.cleanup should run
         atexit.register(self.cleanup)
+
         # Specify that when we get a keyboard interrupt, this function should handle it
+        self.original_sigint_handler = signal.getsignal(signal.SIGINT)
         signal.signal(signal.SIGINT, handler=self.catch_keyboard_interrupt)
 
     def create_callback_executor_thread(self) -> None:
@@ -73,20 +74,15 @@ class NotificationManager(metaclass=Singleton):
         :param notification_config: The configuration for the notification.
         """
         json_config = notification_config.to_json_notification()
-        if not notification_config.contains_callback or self._callback_listener_process is not None:
-            # We can send it directly and kill the process after as we don't need to listen for callbacks.
-            new_process = NotificationProcess(json_config, None)
-            new_process.start()
-            new_process.join(timeout=5)
-        else:
-            # We need to also start a listener, so we send the json through a separate process.
-            self._callback_listener_process = NotificationProcess(json_config, self._callback_queue)
-            self._callback_listener_process.start()
-            self.create_callback_executor_thread()
 
         if notification_config.contains_callback:
+            # We need to also start a listener, so we send the json through a separate process.
+            self._callback_queue = self._callback_queue or SimpleQueue()
+            self.create_callback_executor_thread()
             _FIFO_LIST.append(notification_config.uid)
             _NOTIFICATION_MAP[notification_config.uid] = notification_config
+
+        create_notification(json_config, None)
         self.clear_old_notifications()
         return Notification(notification_config.uid)
 
@@ -108,24 +104,22 @@ class NotificationManager(metaclass=Singleton):
     def catch_keyboard_interrupt(self, *args) -> None:
         """We catch the keyboard interrupt but also pass it onto the user program."""
         self.cleanup()
-        sys.exit(signal.SIGINT)
+        signal.signal(signal.SIGINT, handler=self.original_sigint_handler)
+        signal.raise_signal(signal.SIGINT)
 
     def cleanup(self) -> None:
         """Stop all processes related to the Notification callback handling."""
         if self._callback_executor_thread:
             self._callback_executor_event.clear()
             self._callback_executor_thread.join()
-        if self._callback_listener_process:
-            self._callback_listener_process.kill()
         self._callback_executor_thread = None
-        self._callback_listener_process = None
         _NOTIFICATION_MAP.clear()
         _FIFO_LIST.clear()
 
 
 class CallbackExecutorThread(Thread):
     """
-    Background threat that checks each 0.1 second whether there are any callbacks that it should execute.
+    Background thread that checks each 0.1 second whether there are any callbacks that it should execute.
     """
 
     def __init__(self, keep_running: Event, callback_queue: SimpleQueue):
